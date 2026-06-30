@@ -1,5 +1,6 @@
 package ai.openclaw.app.ui
 
+import ai.openclaw.app.R
 import ai.openclaw.app.BuildConfig
 import android.content.ClipData
 import android.content.ClipboardManager

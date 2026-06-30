@@ -1,5 +1,6 @@
 package ai.openclaw.app.ui
 
+import ai.openclaw.app.R
 import ai.openclaw.app.MainViewModel
 import ai.openclaw.app.VoiceCaptureMode
 import ai.openclaw.app.voice.VoiceConversationEntry
