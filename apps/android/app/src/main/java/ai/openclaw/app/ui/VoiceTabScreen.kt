@@ -51,6 +51,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -398,7 +399,7 @@ fun VoiceTabScreen(viewModel: MainViewModel) {
           shape = RoundedCornerShape(12.dp),
           colors = ButtonDefaults.buttonColors(containerColor = mobileSurfaceStrong, contentColor = mobileText),
         ) {
-          Text("Open settings", style = mobileCallout.copy(fontWeight = FontWeight.SemiBold))
+          Text(stringResource(R.string.open_settings), style = mobileCallout.copy(fontWeight = FontWeight.SemiBold))
         }
       }
     }
@@ -466,7 +467,7 @@ private fun VoiceThinkingBubble() {
         verticalAlignment = Alignment.CenterVertically,
       ) {
         ThinkingDots(color = mobileTextSecondary)
-        Text("OpenClaw is thinking…", style = mobileCallout, color = mobileTextSecondary)
+        Text(stringResource(R.string.openclaw_thinking), style = mobileCallout, color = mobileTextSecondary)
       }
     }
   }

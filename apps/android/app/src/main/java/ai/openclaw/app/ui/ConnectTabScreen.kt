@@ -39,7 +39,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.ui.res.stringResource
+import androidx.compose.material3.Text
+import androidx.compose.ui.res.stringResourceButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -100,7 +102,7 @@ fun ConnectTabScreen(viewModel: MainViewModel) {
     AlertDialog(
       onDismissRequest = { viewModel.declineGatewayTrustPrompt() },
       containerColor = mobileCardSurface,
-      title = { Text("Trust this gateway?", style = mobileHeadline, color = mobileText) },
+      title = { Text(stringResource(R.string.trust_gateway_title), style = mobileHeadline, color = mobileText) },
       text = {
         val message =
           if (prompt.previousFingerprintSha256.isNullOrBlank()) {
@@ -119,7 +121,7 @@ fun ConnectTabScreen(viewModel: MainViewModel) {
           onClick = { viewModel.acceptGatewayTrustPrompt() },
           colors = ButtonDefaults.textButtonColors(contentColor = mobileAccent),
         ) {
-          Text("Trust and continue")
+          Text(stringResource(R.string.trust_and_continue))
         }
       },
       dismissButton = {
@@ -127,7 +129,7 @@ fun ConnectTabScreen(viewModel: MainViewModel) {
           onClick = { viewModel.declineGatewayTrustPrompt() },
           colors = ButtonDefaults.textButtonColors(contentColor = mobileTextSecondary),
         ) {
-          Text("Cancel")
+          Text(stringResource(R.string.cancel))
         }
       },
     )

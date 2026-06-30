@@ -84,7 +84,9 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
+import androidx.compose.ui.res.stringResource
+import androidx.compose.material3.Text
+import androidx.compose.ui.res.stringResourceButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -212,7 +214,7 @@ fun OnboardingFlow(
       AlertDialog(
         onDismissRequest = viewModel::declineGatewayTrustPrompt,
         containerColor = ClawTheme.colors.surfaceRaised,
-        title = { Text("Trust this gateway?", style = ClawTheme.type.section, color = ClawTheme.colors.text) },
+        title = { Text(stringResource(R.string.trust_this_gateway), style = ClawTheme.type.section, color = ClawTheme.colors.text) },
         text = {
           Text(
             "Verify the certificate fingerprint before continuing.\n\n${prompt.fingerprintSha256}",
@@ -222,12 +224,12 @@ fun OnboardingFlow(
         },
         confirmButton = {
           TextButton(onClick = viewModel::acceptGatewayTrustPrompt) {
-            Text("Trust")
+            Text(stringResource(R.string.trust_and_continue))
           }
         },
         dismissButton = {
           TextButton(onClick = viewModel::declineGatewayTrustPrompt) {
-            Text("Cancel")
+            Text(stringResource(R.string.cancel))
           }
         },
       )

@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.ui.res.stringResource
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -100,7 +101,7 @@ private fun LoadingChatHint(modifier: Modifier = Modifier) {
       verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
       CircularProgressIndicator(color = mobileText, strokeWidth = 2.dp)
-      Text("Loading session", style = mobileCallout, color = mobileTextSecondary)
+      Text(stringResource(R.string.loading_session), style = mobileCallout, color = mobileTextSecondary)
     }
   }
 }
@@ -120,7 +121,7 @@ private fun EmptyChatHint(
       modifier = Modifier.padding(horizontal = 12.dp, vertical = 12.dp),
       verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
-      Text("No messages yet", style = mobileHeadline, color = mobileText)
+      Text(stringResource(R.string.no_messages), style = mobileHeadline, color = mobileText)
       Text(
         text =
           if (healthOk) {
