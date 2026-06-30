@@ -6,7 +6,6 @@ import ai.openclaw.app.chat.ChatPendingToolCall
 import ai.openclaw.app.tools.ToolDisplayRegistry
 import ai.openclaw.app.R
 import ai.openclaw.app.ui.mobileAccent
-import ai.openclaw.app.R
 import ai.openclaw.app.ui.mobileAccentSoft
 import ai.openclaw.app.ui.mobileBorder
 import ai.openclaw.app.ui.mobileBorderStrong
