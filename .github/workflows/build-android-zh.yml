@@ -39,8 +39,7 @@ jobs:
       - name: Build Android APK
         run: |
           set -e
-          cd apps/android
-          ./gradlew assembleDebug --stacktrace 2>&1 | tee build.log
+          pnpm android:assemble --stacktrace 2>&1 | tee build.log
           tail -100 build.log
 
       - name: Upload APK
