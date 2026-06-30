@@ -1,3 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">OpenClaw Node</string>
+
+    <!-- Section Titles -->
+    <string name="device_section">DEVICE</string>
+    <string name="media_section">MEDIA</string>
+    <string name="notifications_section">NOTIFICATIONS</string>
+    <string name="data_access_section">DATA ACCESS</string>
+    <string name="location_section">LOCATION</string>
+    <string name="preferences_section">PREFERENCES</string>
+
+    <!-- Device Section -->
+    <string name="name_label">Name</string>
+    <string name="default_assistant">Default Assistant</string>
+    <string name="default_assistant_enabled">OpenClaw is registered as the device assistant.</string>
+    <string name="default_assistant_disabled">Let Android launch OpenClaw from the assistant gesture. Google Assistant App Actions still work separately.</string>
+    <string name="manage_button">Manage</string>
+    <string name="enable_button">Enable</string>
+
+    <!-- Media Section -->
+    <string name="microphone">Microphone</string>
+    <string name="microphone_granted">Granted</string>
+    <string name="microphone_required">Required for voice transcription.</string>
+    <string name="grant_button">Grant</string>
+    <string name="camera">Camera</string>
+    <string name="camera_description">Photos and video clips (foreground only).</string>
+
+    <!-- Notifications Section -->
+    <string name="system_notifications">System Notifications</string>
+    <string name="system_notifications_description">Alerts and foreground service.</string>
+    <string name="notification_listener_access">Notification Listener Access</string>
+    <string name="notification_listener_description">Required for notifications.list, notifications.actions, and forwarded notification events.</string>
+
+    <!-- Data Access Section -->
+    <string name="sms">SMS</string>
+    <string name="sms_description">Send and search SMS from this device.</string>
+    <string name="forward_notification_events">Forward Notification Events</string>
+    <string name="forward_notification_events_on">Forward listener events into gateway node events. Off by default until you enable it.</string>
+    <string name="forward_notification_events_off">Notification listener access is off, so no notification events can be forwarded yet.</string>
+    <string name="package_filter_allowlist">Package Filter: Allowlist</string>
+    <string name="package_filter_allowlist_desc">Only listed package IDs are forwarded.</string>
+    <string name="package_filter_blocklist">Package Filter: Blocklist</string>
+    <string name="package_filter_blocklist_desc">All packages except listed IDs are forwarded.</string>
+    <string name="open_app_picker">Open App Picker</string>
+    <string name="close_app_picker">Close App Picker</string>
+    <string name="show_system_apps">Show System Apps</string>
+    <string name="show_system_apps_desc">Include Android/system packages in results.</string>
+    <string name="quiet_hours">Quiet Hours</string>
+    <string name="quiet_hours_desc">Suppress forwarding during a local time window.</string>
+    <string name="quiet_start_label">Quiet Start (HH:mm)</string>
+    <string name="quiet_start_error">Use 24-hour HH:mm format, for example 22:00.</string>
+    <string name="quiet_end_label">Quiet End (HH:mm)</string>
+    <string name="quiet_end_error">Use 24-hour HH:mm format, for example 07:00.</string>
+    <string name="save_quiet_hours">Save Quiet Hours</string>
+    <string name="max_events_per_minute">Max Events / Minute</string>
+    <string name="save_rate">Save Rate</string>
+    <string name="route_session_key">Route Session Key (optional)</string>
+    <string name="route_session_key_hint">Blank keeps notification events on this device\'s default notification route. Set a key only to pin forwarding into a different session.</string>
+    <string name="save_session_route">Save Session Route</string>
+
+    <!-- Media -->
+    <string name="photos">Photos</string>
+    <string name="photos_desc">Access recent photos.</string>
+    <string name="contacts">Contacts</string>
+    <string name="contacts_desc">Search and add contacts.</string>
+    <string name="calendar">Calendar</string>
+    <string name="calendar_desc">Read and create events.</string>
+    <string name="call_log">Call Log</string>
+    <string name="call_log_desc">Search recent call history.</string>
+    <string name="motion">Motion</string>
+    <string name="motion_desc">Track steps and activity.</string>
+
+    <!-- Location -->
+    <string name="location_off">Off</string>
+    <string name="location_off_desc">Disable location sharing.</string>
+    <string name="location_while_using">While Using</string>
+    <string name="location_while_using_desc">Only while OpenClaw is open.</string>
+    <string name="precise_location">Precise Location</string>
+    <string name="precise_location_desc">Use precise GPS when available.</string>
+
+    <!-- Preferences -->
+    <string name="prevent_sleep">Prevent Sleep</string>
+    <string name="prevent_sleep_desc">Keep screen awake while open.</string>
+    <string name="debug_canvas">Debug Canvas</string>
+    <string name="debug_canvas_desc">Show status overlay on canvas.</string>
+
+    <!-- Gateway Connection -->
+    <string name="gateway_connection">Gateway Connection</string>
+    <string name="gateway_connected">Your gateway is active and ready.</string>
+    <string name="gateway_disconnected">Connect to your gateway to get started.</string>
+    <string name="endpoint">Endpoint</string>
+    <string name="status">Status</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="connect_gateway">Connect Gateway</string>
+    <string name="pairing_required">Pairing required</string>
+    <string name="last_gateway_error">Last gateway error</string>
+    <string name="copy_report">Copy Report for Claw</string>
+    <string name="advanced_controls">Advanced controls</string>
+    <string name="advanced_controls_desc">Setup code, endpoint, TLS, token, password, onboarding.</string>
+    <string name="connection_method">Connection method</string>
+    <string name="setup_code">Setup Code</string>
+    <string name="manual">Manual</string>
+    <string name="run_on_gateway">Run these on the gateway host:</string>
+    <string name="setup_code_label">Setup Code</string>
+    <string name="paste_setup_code">Paste setup code</string>
+    <string name="host_label">Host</string>
+    <string name="port_label">Port</string>
+    <string name="port_tls_label">Port (optional, defaults to 443)</string>
+    <string name="use_tls">Use TLS</string>
+    <string name="use_tls_desc">Turn this on for Tailscale or public hosts. Private LAN ws:// remains supported.</string>
+    <string name="token_optional">Token (optional)</string>
+    <string name="token_placeholder">token</string>
+    <string name="password_optional">Password (optional)</string>
+    <string name="password_placeholder">password</string>
+    <string name="resolved_endpoint">Resolved endpoint</string>
+    <string name="run_onboarding_again">Run onboarding again</string>
+    <string name="android_emulator">Android Emulator</string>
+    <string name="localhost">Localhost</string>
+    <string name="trust_gateway_title">Trust this gateway?</string>
+    <string name="trust_first_time">First-time TLS connection.\n\nVerify this SHA-256 fingerprint before trusting:\n%s</string>
+    <string name="trust_changed">The gateway TLS certificate changed. Only continue if you expected this.\n\nOld SHA-256 fingerprint:\n%s\n\nNew SHA-256 fingerprint:\n%s</string>
+    <string name="trust_and_continue">Trust and continue</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- Chat -->
+    <string name="chat_placeholder">Type a message…</string>
+    <string name="gateway_offline">Gateway is offline. Open Settings to reconnect.</string>
+    <string name="thinking_level">Select thinking level</string>
+    <string name="attach">Attach</string>
+    <string name="refresh">Refresh</string>
+    <string name="abort">Abort</string>
+    <string name="send">Send</string>
+    <string name="loading_session">Loading session</string>
+    <string name="no_messages">No messages yet</string>
+    <string name="thinking">Thinking…</string>
+    <string name="running_tools">Running tools…</string>
+    <string name="trust_this_gateway">Trust this gateway?</string>
+    <string name="open_settings">Open settings</string>
+    <string name="openclaw_thinking">OpenClaw is thinking…</string>
+    <string name="copied_gateway_diagnostics">Copied gateway diagnostics</string>
+
+    <!-- App Picker / Filter States -->
+    <string name="allowlist_none">Selected: none — allowlist mode forwards nothing until you add apps.</string>
+    <string name="allowlist_selected">Selected: %d app(s) allowed.</string>
+    <string name="blocklist_none">Selected: none — blocklist mode forwards all apps except OpenClaw.</string>
+    <string name="blocklist_selected">Selected: %d app(s) blocked.</string>
+    <string name="forwarding_available">Forwarding is available when enabled below.</string>
+    <string name="forwarding_disabled">Forwarding controls stay disabled until Notification Listener Access is enabled in system Settings.</string>
+
+    <!-- Misc -->
+    <string name="not_set">Not set</string>
+    <string name="paste_valid_setup_code">Paste a valid setup code to connect.</string>
+    <string name="operator_offline">operator offline</string>
+    <string name="collapse_advanced">Collapse advanced controls</string>
+    <string name="expand_advanced">Expand advanced controls</string>
+    <string name="for_tailscale">For Tailscale or public hosts, use wss:// or Tailscale Serve. Private LAN ws:// remains supported.</string>
 </resources>

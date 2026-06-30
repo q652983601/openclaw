@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OpenClaw Node</string>
+
+    <!-- 板块标题 -->
+    <string name="device_section">设备</string>
+    <string name="media_section">媒体</string>
+    <string name="notifications_section">通知</string>
+    <string name="data_access_section">数据访问</string>
+    <string name="location_section">位置</string>
+    <string name="preferences_section">偏好设置</string>
+
+    <!-- 设备板块 -->
+    <string name="name_label">名称</string>
+    <string name="default_assistant">默认助手</string>
+    <string name="default_assistant_enabled">OpenClaw 已注册为设备默认助手。</string>
+    <string name="default_assistant_disabled">允许 Android 通过助手手势启动 OpenClaw。Google Assistant 应用操作仍可独立运行。</string>
+    <string name="manage_button">管理</string>
+    <string name="enable_button">启用</string>
+
+    <!-- 媒体板块 -->
+    <string name="microphone">麦克风</string>
+    <string name="microphone_granted">已授权</string>
+    <string name="microphone_required">语音转录需要此权限。</string>
+    <string name="grant_button">授予</string>
+    <string name="camera">相机</string>
+    <string name="camera_description">照片和视频片段（仅前台）。</string>
+
+    <!-- 通知板块 -->
+    <string name="system_notifications">系统通知</string>
+    <string name="system_notifications_description">提醒和前台服务。</string>
+    <string name="notification_listener_access">通知读取权限</string>
+    <string name="notification_listener_description">notifications.list、notifications.actions 和转发通知事件需要此权限。</string>
+
+    <!-- 数据访问板块 -->
+    <string name="sms">短信</string>
+    <string name="sms_description">发送和搜索本设备短信。</string>
+    <string name="forward_notification_events">转发通知事件</string>
+    <string name="forward_notification_events_on">将监听器事件转发到 Gateway 节点事件。默认关闭，需手动启用。</string>
+    <string name="forward_notification_events_off">通知读取权限已关闭，尚无法转发通知事件。</string>
+    <string name="package_filter_allowlist">包名过滤：白名单</string>
+    <string name="package_filter_allowlist_desc">仅转发已列出的包名。</string>
+    <string name="package_filter_blocklist">包名过滤：黑名单</string>
+    <string name="package_filter_blocklist_desc">除已列出的包名外全部转发。</string>
+    <string name="open_app_picker">打开应用选择器</string>
+    <string name="close_app_picker">关闭应用选择器</string>
+    <string name="show_system_apps">显示系统应用</string>
+    <string name="show_system_apps_desc">结果中包括 Android/系统包。</string>
+    <string name="quiet_hours">免打扰时段</string>
+    <string name="quiet_hours_desc">在本地时间段内暂停转发。</string>
+    <string name="quiet_start_label">免打扰开始（HH:mm）</string>
+    <string name="quiet_start_error">请使用 24 小时制 HH:mm 格式，例如 22:00。</string>
+    <string name="quiet_end_label">免打扰结束（HH:mm）</string>
+    <string name="quiet_end_error">请使用 24 小时制 HH:mm 格式，例如 07:00。</string>
+    <string name="save_quiet_hours">保存免打扰时段</string>
+    <string name="max_events_per_minute">每分钟最大事件数</string>
+    <string name="save_rate">保存速率</string>
+    <string name="route_session_key">路由会话密钥（可选）</string>
+    <string name="route_session_key_hint">留空则通知事件保留在本设备的默认通知路由。仅在需要固定转发到其他会话时设置密钥。</string>
+    <string name="save_session_route">保存会话路由</string>
+
+    <!-- 媒体权限 -->
+    <string name="photos">照片</string>
+    <string name="photos_desc">访问近期照片。</string>
+    <string name="contacts">通讯录</string>
+    <string name="contacts_desc">搜索和添加联系人。</string>
+    <string name="calendar">日历</string>
+    <string name="calendar_desc">读取和创建日程。</string>
+    <string name="call_log">通话记录</string>
+    <string name="call_log_desc">搜索近期通话记录。</string>
+    <string name="motion">运动</string>
+    <string name="motion_desc">追踪步数和活动。</string>
+
+    <!-- 位置 -->
+    <string name="location_off">关闭</string>
+    <string name="location_off_desc">关闭位置共享。</string>
+    <string name="location_while_using">使用时</string>
+    <string name="location_while_using_desc">仅在 OpenClaw 打开时启用。</string>
+    <string name="precise_location">精确位置</string>
+    <string name="precise_location_desc">可用时使用精确 GPS。</string>
+
+    <!-- 偏好设置 -->
+    <string name="prevent_sleep">保持屏幕常亮</string>
+    <string name="prevent_sleep_desc">打开时保持屏幕唤醒。</string>
+    <string name="debug_canvas">调试画布</string>
+    <string name="debug_canvas_desc">在画布上显示状态覆盖层。</string>
+
+    <!-- Gateway 连接 -->
+    <string name="gateway_connection">Gateway 连接</string>
+    <string name="gateway_connected">Gateway 已激活并准备就绪。</string>
+    <string name="gateway_disconnected">连接 Gateway 以开始使用。</string>
+    <string name="endpoint">端点</string>
+    <string name="status">状态</string>
+    <string name="disconnect">断开</string>
+    <string name="connect_gateway">连接 Gateway</string>
+    <string name="pairing_required">需要配对</string>
+    <string name="last_gateway_error">最近一次 Gateway 错误</string>
+    <string name="copy_report">复制报告给 Claw</string>
+    <string name="advanced_controls">高级控制</string>
+    <string name="advanced_controls_desc">设置码、端点、TLS、令牌、密码、引导。</string>
+    <string name="connection_method">连接方式</string>
+    <string name="setup_code">设置码</string>
+    <string name="manual">手动</string>
+    <string name="run_on_gateway">在 Gateway 主机上运行：</string>
+    <string name="setup_code_label">设置码</string>
+    <string name="paste_setup_code">粘贴设置码</string>
+    <string name="host_label">主机</string>
+    <string name="port_label">端口</string>
+    <string name="port_tls_label">端口（可选，默认 443）</string>
+    <string name="use_tls">使用 TLS</string>
+    <string name="use_tls_desc">Tailscale 或公网主机请开启此选项。私有局域网 ws:// 仍然支持。</string>
+    <string name="token_optional">令牌（可选）</string>
+    <string name="token_placeholder">token</string>
+    <string name="password_optional">密码（可选）</string>
+    <string name="password_placeholder">password</string>
+    <string name="resolved_endpoint">解析后的端点</string>
+    <string name="run_onboarding_again">重新运行引导</string>
+    <string name="android_emulator">Android 模拟器</string>
+    <string name="localhost">本机</string>
+    <string name="trust_gateway_title">信任此 Gateway？</string>
+    <string name="trust_first_time">首次 TLS 连接。\n\n信任前请验证此 SHA-256 指纹：\n%s</string>
+    <string name="trust_changed">Gateway TLS 证书已变更。仅在预期变更时继续。\n\n旧 SHA-256 指纹：\n%s\n\n新 SHA-256 指纹：\n%s</string>
+    <string name="trust_and_continue">信任并继续</string>
+    <string name="cancel">取消</string>
+
+    <!-- 聊天 -->
+    <string name="chat_placeholder">输入消息…</string>
+    <string name="gateway_offline">Gateway 离线。打开设置以重新连接。</string>
+    <string name="thinking_level">选择思考级别</string>
+    <string name="attach">附件</string>
+    <string name="refresh">刷新</string>
+    <string name="abort">中止</string>
+    <string name="send">发送</string>
+    <string name="loading_session">加载会话</string>
+    <string name="no_messages">暂无消息</string>
+    <string name="thinking">思考中…</string>
+    <string name="running_tools">运行工具中…</string>
+    <string name="trust_this_gateway">信任此 Gateway？</string>
+    <string name="open_settings">打开设置</string>
+    <string name="openclaw_thinking">OpenClaw 正在思考…</string>
+    <string name="copied_gateway_diagnostics">已复制 Gateway 诊断信息</string>
+
+    <!-- 应用选择器 / 过滤状态 -->
+    <string name="allowlist_none">已选择：无 — 白名单模式在添加应用前不会转发任何内容。</string>
+    <string name="allowlist_selected">已选择：允许 %d 个应用。</string>
+    <string name="blocklist_none">已选择：无 — 黑名单模式除 OpenClaw 外转发所有应用。</string>
+    <string name="blocklist_selected">已选择：屏蔽 %d 个应用。</string>
+    <string name="forwarding_available">下方启用后可使用转发。</string>
+    <string name="forwarding_disabled">在系统设置中启用通知读取权限前，转发控制保持禁用。</string>
+
+    <!-- 其他 -->
+    <string name="not_set">未设置</string>
+    <string name="paste_valid_setup_code">粘贴有效的设置码以连接。</string>
+    <string name="operator_offline">操作员离线</string>
+    <string name="collapse_advanced">收起高级控制</string>
+    <string name="expand_advanced">展开高级控制</string>
+    <string name="for_tailscale">Tailscale 或公网主机请使用 wss:// 或 Tailscale Serve。私有局域网 ws:// 仍然支持。</string>
+</resources>
