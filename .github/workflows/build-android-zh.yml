@@ -34,12 +34,12 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --no-frozen-lockfile
 
       - name: Build Android APK
         run: |
           set -e
-          pnpm android:assemble --stacktrace 2>&1 | tee build.log || true
+          pnpm android:assemble:third-party --stacktrace 2>&1 | tee build.log || true
 
       - name: Upload build log (even on failure)
         if: always()
@@ -52,5 +52,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: openclaw-android-zh
-          path: apps/android/app/build/outputs/apk/debug/*.apk
+          path: apps/android/app/build/outputs/apk/thirdParty/debug/*.apk
           if-no-files-found: error
