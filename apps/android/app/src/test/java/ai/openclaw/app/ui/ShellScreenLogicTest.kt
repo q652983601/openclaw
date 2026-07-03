@@ -9,14 +9,22 @@ import ai.openclaw.app.GatewayNodeSummary
 import ai.openclaw.app.GatewayNodesDevicesSummary
 import ai.openclaw.app.GatewayPendingDeviceSummary
 import ai.openclaw.app.ui.design.ClawStatus
+import android.content.Context
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
+import org.robolectric.annotation.Config
 
+@RunWith(RobolectricTestRunner::class)
+@Config(sdk = [34])
 class ShellScreenLogicTest {
+  private val context: Context = RuntimeEnvironment.getApplication()
   @Test
   fun bottomNavHidesForKeyboardAndCommandPalette() {
     assertTrue(shellBottomNavVisible(keyboardVisible = false, commandOpen = false))
@@ -356,21 +364,22 @@ class ShellScreenLogicTest {
 
   @Test
   fun settingsSectionTitlesGroupPowerSettingsByMeaning() {
-    assertEquals("Connection", settingsSectionTitleForRoute(SettingsRoute.Gateway))
-    assertEquals("Connection", settingsSectionTitleForRoute(SettingsRoute.NodesDevices))
-    assertEquals("Agents & automation", settingsSectionTitleForRoute(SettingsRoute.ProvidersModels))
-    assertEquals("Agents & automation", settingsSectionTitleForRoute(SettingsRoute.Approvals))
-    assertEquals("Agents & automation", settingsSectionTitleForRoute(SettingsRoute.CronJobs))
-    assertEquals("Phone context & privacy", settingsSectionTitleForRoute(SettingsRoute.PhoneCapabilities))
-    assertEquals("Phone context & privacy", settingsSectionTitleForRoute(SettingsRoute.Notifications))
-    assertEquals("Profile & device", settingsSectionTitleForRoute(SettingsRoute.Appearance))
-    assertEquals("Diagnostics", settingsSectionTitleForRoute(SettingsRoute.Health))
+    assertEquals("Connection", settingsSectionTitleForRoute(context, SettingsRoute.Gateway))
+    assertEquals("Connection", settingsSectionTitleForRoute(context, SettingsRoute.NodesDevices))
+    assertEquals("Agents & automation", settingsSectionTitleForRoute(context, SettingsRoute.ProvidersModels))
+    assertEquals("Agents & automation", settingsSectionTitleForRoute(context, SettingsRoute.Approvals))
+    assertEquals("Agents & automation", settingsSectionTitleForRoute(context, SettingsRoute.CronJobs))
+    assertEquals("Phone context & privacy", settingsSectionTitleForRoute(context, SettingsRoute.PhoneCapabilities))
+    assertEquals("Phone context & privacy", settingsSectionTitleForRoute(context, SettingsRoute.Notifications))
+    assertEquals("Profile & device", settingsSectionTitleForRoute(context, SettingsRoute.Appearance))
+    assertEquals("Diagnostics", settingsSectionTitleForRoute(context, SettingsRoute.Health))
   }
 
   @Test
   fun settingsSectionsPreserveMeaningfulOrder() {
     val sections =
       settingsSections(
+        context,
         listOf(
           settingsRow(SettingsRoute.Voice),
           settingsRow(SettingsRoute.Agents),
