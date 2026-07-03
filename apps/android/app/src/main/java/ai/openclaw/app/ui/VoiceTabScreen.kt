@@ -178,12 +178,12 @@ fun VoiceTabScreen(viewModel: MainViewModel) {
                 tint = mobileTextTertiary,
               )
               Text(
-                "Tap mic or Talk",
+                stringResource(R.string.tap_mic_or_talk),
                 style = mobileHeadline,
                 color = mobileTextSecondary,
               )
               Text(
-                "Mic sends turns; Talk keeps the conversation open.",
+                stringResource(R.string.voice_tab_hint),
                 style = mobileCallout,
                 color = mobileTextTertiary,
               )
@@ -242,13 +242,13 @@ fun VoiceTabScreen(viewModel: MainViewModel) {
           ) {
             Icon(
               imageVector = if (speakerEnabled) Icons.AutoMirrored.Filled.VolumeUp else Icons.AutoMirrored.Filled.VolumeOff,
-              contentDescription = if (speakerEnabled) "Mute speaker" else "Unmute speaker",
+              contentDescription = if (speakerEnabled) stringResource(R.string.mute_speaker) else stringResource(R.string.unmute_speaker),
               modifier = Modifier.size(22.dp),
               tint = if (speakerEnabled) mobileTextSecondary else mobileDanger,
             )
           }
           Text(
-            if (speakerEnabled) "Speaker" else "Muted",
+            if (speakerEnabled) stringResource(R.string.speaker) else stringResource(R.string.muted),
             style = mobileCaption2,
             color = if (speakerEnabled) mobileTextTertiary else mobileDanger,
           )
@@ -305,7 +305,7 @@ fun VoiceTabScreen(viewModel: MainViewModel) {
           ) {
             Icon(
               imageVector = if (micEnabled) Icons.Default.MicOff else Icons.Default.Mic,
-              contentDescription = if (micEnabled) "Turn microphone off" else "Turn microphone on",
+              contentDescription = if (micEnabled) stringResource(R.string.turn_microphone_off) else stringResource(R.string.turn_microphone_on),
               modifier = Modifier.size(24.dp),
             )
           }
@@ -333,14 +333,14 @@ fun VoiceTabScreen(viewModel: MainViewModel) {
           ) {
             Icon(
               imageVector = Icons.Default.RecordVoiceOver,
-              contentDescription = if (talkModeEnabled) "Turn Talk Mode off" else "Turn Talk Mode on",
+              contentDescription = if (talkModeEnabled) stringResource(R.string.turn_talk_mode_off) else stringResource(R.string.turn_talk_mode_on),
               modifier = Modifier.size(22.dp),
               tint = if (talkModeEnabled) mobileSuccess else mobileTextSecondary,
             )
           }
           Spacer(modifier = Modifier.height(4.dp))
           Text(
-            if (talkModeEnabled) "Talk on" else "Talk",
+            if (talkModeEnabled) stringResource(R.string.talk_on) else stringResource(R.string.talk),
             style = mobileCaption2,
             color = if (talkModeEnabled) mobileSuccess else mobileTextTertiary,
           )
@@ -351,12 +351,12 @@ fun VoiceTabScreen(viewModel: MainViewModel) {
       val queueCount = micQueuedMessages.size
       val stateText =
         when {
-          voiceCaptureMode == VoiceCaptureMode.TalkMode && talkModeSpeaking -> "Talk speaking"
-          voiceCaptureMode == VoiceCaptureMode.TalkMode && talkModeListening -> "Talk listening"
-          voiceCaptureMode == VoiceCaptureMode.TalkMode -> "Talk on"
+          voiceCaptureMode == VoiceCaptureMode.TalkMode && talkModeSpeaking -> stringResource(R.string.talk_speaking)
+          voiceCaptureMode == VoiceCaptureMode.TalkMode && talkModeListening -> stringResource(R.string.talk_listening)
+          voiceCaptureMode == VoiceCaptureMode.TalkMode -> stringResource(R.string.talk_on)
           micEnabled || micIsSending || micCooldown -> micStatusText
-          queueCount > 0 -> "$queueCount queued"
-          else -> "Mic off"
+          queueCount > 0 -> stringResource(R.string.queued_format_short, queueCount)
+          else -> stringResource(R.string.mic_off)
         }
       val stateColor =
         when {
@@ -387,9 +387,9 @@ fun VoiceTabScreen(viewModel: MainViewModel) {
           }
         Text(
           if (showRationale) {
-            "Microphone permission is required for voice mode."
+            stringResource(R.string.microphone_permission_required_voice_mode)
           } else {
-            "Microphone blocked. Open app settings to enable it."
+            stringResource(R.string.microphone_blocked_open_settings)
           },
           style = mobileCaption1,
           color = mobileWarning,
@@ -436,12 +436,12 @@ private fun VoiceTurnBubble(entry: VoiceConversationEntry) {
         verticalArrangement = Arrangement.spacedBy(3.dp),
       ) {
         Text(
-          if (isUser) "You" else "OpenClaw",
+          text = if (isUser) stringResource(R.string.you) else stringResource(R.string.openclaw_brand),
           style = mobileCaption2.copy(fontWeight = FontWeight.SemiBold, letterSpacing = 0.6.sp),
           color = if (isUser) mobileAccent else mobileTextSecondary,
         )
         Text(
-          if (entry.isStreaming && entry.text.isBlank()) "Listening response…" else entry.text,
+          if (entry.isStreaming && entry.text.isBlank()) stringResource(R.string.listening_response_alt) else entry.text,
           style = mobileCallout,
           color = mobileText,
         )

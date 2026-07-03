@@ -30,6 +30,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import ai.openclaw.app.R
 
 /** Settings screen for gateway skills and their readiness state. */
 @Composable
@@ -64,22 +66,22 @@ internal fun SkillsSettingsScreen(
   }
 
   SettingsDetailFrame(
-    title = "Skills",
-    subtitle = "Installed capabilities available to OpenClaw.",
+    title = stringResource(R.string.skills_detail_title),
+    subtitle = stringResource(R.string.skills_detail_subtitle),
     icon = Icons.Default.Settings,
     onBack = onBack,
   ) {
     SettingsMetricPanel(
       rows =
         listOf(
-          SettingsMetric("Installed", skills.size.toString()),
-          SettingsMetric("Ready", readyCount.toString()),
-          SettingsMetric("Needs Setup", needsSetupCount.toString()),
+          SettingsMetric(stringResource(R.string.skills_metric_installed), skills.size.toString()),
+          SettingsMetric(stringResource(R.string.skills_metric_ready), readyCount.toString()),
+          SettingsMetric(stringResource(R.string.skills_metric_needs_setup), needsSetupCount.toString()),
         ),
     )
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
       ClawSecondaryButton(
-        text = if (skillsRefreshing) "Refreshing" else "Refresh",
+        text = if (skillsRefreshing) stringResource(R.string.skills_refreshing) else stringResource(R.string.skills_refresh),
         onClick = viewModel::refreshSkills,
         enabled = isConnected && !skillsRefreshing,
         modifier = Modifier.weight(1f),
@@ -93,13 +95,13 @@ internal fun SkillsSettingsScreen(
     when {
       !isConnected ->
         ClawPanel {
-          Text(text = "Connect the gateway to load skills.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+          Text(text = stringResource(R.string.connect_gateway_load_skills), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
         }
       skills.isEmpty() ->
         ClawPanel {
           Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
-            Text(text = "No skills installed.", style = ClawTheme.type.section, color = ClawTheme.colors.text)
-            Text(text = "Skills installed on the gateway will appear here.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+            Text(text = stringResource(R.string.no_skills_installed), style = ClawTheme.type.section, color = ClawTheme.colors.text)
+            Text(text = stringResource(R.string.skills_install_hint), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
           }
         }
       else -> SkillsPanel(skills = skills, onSkillClick = { selectedSkillKey = it.skillKey })
@@ -118,7 +120,7 @@ private fun SkillDetailSettingsScreen(
 
   SettingsDetailFrame(
     title = skill?.name ?: skillKey,
-    subtitle = "Inspect installed skill capability and setup state.",
+    subtitle = stringResource(R.string.skill_detail_subtitle),
     icon = Icons.Default.Settings,
     onBack = onBack,
   ) {
@@ -126,9 +128,9 @@ private fun SkillDetailSettingsScreen(
       SettingsMetricPanel(
         rows =
           listOf(
-            SettingsMetric("Status", skillStatusText(summary)),
-            SettingsMetric("Source", skillSourceLabel(summary)),
-            SettingsMetric("Missing", summary.missingCount.toString()),
+            SettingsMetric(stringResource(R.string.skill_metric_status), skillStatusText(summary)),
+            SettingsMetric(stringResource(R.string.skill_metric_source), skillSourceLabel(summary)),
+            SettingsMetric(stringResource(R.string.skill_metric_missing), summary.missingCount.toString()),
           ),
       )
       SkillSetupPanel(summary)
@@ -141,7 +143,7 @@ private fun SkillDetailSettingsScreen(
 private fun SkillSetupPanel(skill: GatewaySkillSummary) {
   ClawPanel {
     Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-      Text(text = "Setup", style = ClawTheme.type.section, color = ClawTheme.colors.text)
+      Text(text = stringResource(R.string.skill_setup), style = ClawTheme.type.section, color = ClawTheme.colors.text)
       Text(text = skillConfigurationText(skill), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
     }
   }
@@ -154,29 +156,29 @@ private fun SkillDetailPanel(
 ) {
   if (!isConnected) {
     ClawPanel {
-      Text(text = "Connect the gateway to load skill details.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+      Text(text = stringResource(R.string.connect_gateway_load_skills), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
     }
     return
   }
   if (skill == null) {
     ClawPanel {
-      Text(text = "Skill detail is not available in the current skills status.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+      Text(text = stringResource(R.string.skill_detail_unavailable), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
     }
     return
   }
   SettingsMetricPanel(
     rows =
       listOf(
-        SettingsMetric("Skill Key", skill.skillKey),
-        SettingsMetric("Display", skill.name),
-        SettingsMetric("Source", skillSourceLabel(skill)),
-        SettingsMetric("Install Options", skill.installCount.toString()),
+        SettingsMetric(stringResource(R.string.skill_metric_skill_key), skill.skillKey),
+        SettingsMetric(stringResource(R.string.skill_metric_display), skill.name),
+        SettingsMetric(stringResource(R.string.skill_metric_source), skillSourceLabel(skill)),
+        SettingsMetric(stringResource(R.string.skill_metric_install_options), skill.installCount.toString()),
       ),
   )
   skill.description?.let { description ->
     ClawPanel {
       Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(text = "Description", style = ClawTheme.type.section, color = ClawTheme.colors.text)
+        Text(text = stringResource(R.string.skill_description), style = ClawTheme.type.section, color = ClawTheme.colors.text)
         Text(text = description, style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
       }
     }
@@ -201,7 +203,7 @@ private fun SkillListRow(
   ClawDetailRow(
     title = skill.name,
     subtitle = skillSubtitle(skill),
-    modifier = Modifier.clickable(onClickLabel = "Open skill detail", onClick = onClick),
+    modifier = Modifier.clickable(onClickLabel = stringResource(R.string.open_skill_detail), onClick = onClick),
     leading = { ClawTextBadge(text = skillBadge(skill)) },
     trailing = {
       Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -220,11 +222,12 @@ private fun skillReady(skill: GatewaySkillSummary): Boolean = !skill.disabled &&
 
 private fun skillNeedsSetup(skill: GatewaySkillSummary): Boolean = !skill.disabled && (skill.blockedByAllowlist || !skill.eligible || skill.missingCount > 0)
 
+@Composable
 private fun skillStatusText(skill: GatewaySkillSummary): String =
   when {
-    skill.disabled -> "Off"
-    skillNeedsSetup(skill) -> "Setup"
-    else -> "Ready"
+    skill.disabled -> stringResource(R.string.skill_status_off)
+    skillNeedsSetup(skill) -> stringResource(R.string.skill_status_setup)
+    else -> stringResource(R.string.skill_status_ready)
   }
 
 private fun skillStatus(skill: GatewaySkillSummary): ClawStatus =
@@ -234,34 +237,37 @@ private fun skillStatus(skill: GatewaySkillSummary): ClawStatus =
     else -> ClawStatus.Success
   }
 
+@Composable
 private fun skillSubtitle(skill: GatewaySkillSummary): String {
   val issue =
     when {
-      skill.disabled -> "Disabled"
-      skill.blockedByAllowlist -> "Blocked"
-      skill.missingCount > 0 -> "${skill.missingCount} missing"
-      !skill.eligible -> "Needs setup"
+      skill.disabled -> stringResource(R.string.skill_disabled)
+      skill.blockedByAllowlist -> stringResource(R.string.skill_blocked)
+      skill.missingCount > 0 -> stringResource(R.string.skill_missing_plural, skill.missingCount)
+      !skill.eligible -> stringResource(R.string.skill_needs_setup)
       else -> null
     }
   return listOfNotNull(skill.description, skillSourceLabel(skill), issue).joinToString(" · ")
 }
 
+@Composable
 private fun skillConfigurationText(skill: GatewaySkillSummary): String =
   when {
-    skill.disabled -> "This skill is disabled on the gateway. Android shows detail only; enable or configure it from desktop or CLI."
-    skill.blockedByAllowlist -> "This skill is blocked by the gateway allowlist. Android can inspect it, but allowlist changes stay on desktop or CLI."
-    skill.missingCount > 0 -> "This skill needs ${skill.missingCount} setup item(s). Android shows what is installed; setup/config changes stay on desktop or CLI."
-    !skill.eligible -> "This skill is installed but not currently eligible to run. Use desktop or CLI for configuration changes."
-    else -> "Ready on this gateway. Android detail is read-only; install, update, and configuration changes stay on desktop or CLI."
+    skill.disabled -> stringResource(R.string.skill_disabled_detail)
+    skill.blockedByAllowlist -> stringResource(R.string.skill_blocked_detail)
+    skill.missingCount > 0 -> stringResource(R.string.skill_missing_detail, skill.missingCount)
+    !skill.eligible -> stringResource(R.string.skill_not_eligible_detail)
+    else -> stringResource(R.string.skill_ready_detail)
   }
 
+@Composable
 private fun skillSourceLabel(skill: GatewaySkillSummary): String =
   when (skill.source) {
-    "openclaw-bundled" -> if (skill.bundled) "Built-in" else "Bundled"
-    "openclaw-managed" -> "Installed"
-    "openclaw-workspace" -> "Workspace"
-    "openclaw-extra" -> "Extra"
-    else -> "Skill"
+    "openclaw-bundled" -> if (skill.bundled) stringResource(R.string.skill_source_built_in) else stringResource(R.string.skill_source_bundled)
+    "openclaw-managed" -> stringResource(R.string.skill_source_installed)
+    "openclaw-workspace" -> stringResource(R.string.skill_source_workspace)
+    "openclaw-extra" -> stringResource(R.string.skill_source_extra)
+    else -> stringResource(R.string.skill_source_default)
   }
 
 private fun skillBadge(skill: GatewaySkillSummary): String {

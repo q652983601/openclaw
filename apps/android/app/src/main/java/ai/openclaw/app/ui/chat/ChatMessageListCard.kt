@@ -126,9 +126,9 @@ private fun EmptyChatHint(
       Text(
         text =
           if (healthOk) {
-            "Send the first prompt to start this session."
+            stringResource(R.string.empty_chat_send_first)
           } else {
-            "Connect gateway first, then return to chat."
+            stringResource(R.string.empty_chat_connect_gateway)
           },
         style = mobileCallout,
         color = mobileTextSecondary,

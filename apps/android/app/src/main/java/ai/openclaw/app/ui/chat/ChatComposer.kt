@@ -322,12 +322,13 @@ private fun ThinkingMenuItem(
   )
 }
 
+@Composable
 private fun thinkingLabel(raw: String): String =
   when (raw.trim().lowercase()) {
-    "low" -> "Low"
-    "medium" -> "Medium"
-    "high" -> "High"
-    else -> "Off"
+    "low" -> stringResource(R.string.thinking_level_low)
+    "medium" -> stringResource(R.string.thinking_level_medium)
+    "high" -> stringResource(R.string.thinking_level_high)
+    else -> stringResource(R.string.thinking_level_off)
   }
 
 @Composable

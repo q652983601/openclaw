@@ -3,6 +3,7 @@ package ai.openclaw.app.ui
 import ai.openclaw.app.GatewayModelProviderSummary
 import ai.openclaw.app.GatewayModelSummary
 import ai.openclaw.app.MainViewModel
+import ai.openclaw.app.R
 import ai.openclaw.app.ui.design.ClawEmptyState
 import ai.openclaw.app.ui.design.ClawPanel
 import ai.openclaw.app.ui.design.ClawPlainIconButton
@@ -10,7 +11,10 @@ import ai.openclaw.app.ui.design.ClawScaffold
 import ai.openclaw.app.ui.design.ClawSeparatedColumn
 import ai.openclaw.app.ui.design.ClawTextField
 import ai.openclaw.app.ui.design.ClawTheme
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -47,6 +51,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -72,11 +77,11 @@ internal fun CommandPalette(
   val normalizedQuery = query.trim().lowercase()
   val quickActions =
     listOf(
-      CommandItem("Open Chat", "Start or continue a conversation", Icons.Outlined.ChatBubbleOutline, onOpenChat),
-      CommandItem("Start Voice", "Talk or dictate with OpenClaw", Icons.Outlined.MicNone, onOpenVoice),
-      CommandItem("Browse Sessions", "Find previous conversations", Icons.Outlined.AccessTime, onOpenSessions),
-      CommandItem("Providers & Models", providerCommandSubtitle(isConnected, providers, models), Icons.Outlined.Inventory2, onOpenProviders),
-      CommandItem("Settings", "Gateway, voice, notifications, privacy", Icons.Outlined.Settings, onOpenSettings),
+      CommandItem(stringResource(R.string.open_chat), stringResource(R.string.start_or_continue_conversation), Icons.Outlined.ChatBubbleOutline, onOpenChat),
+      CommandItem(stringResource(R.string.start_voice), stringResource(R.string.talk_or_dictate_with_openclaw), Icons.Outlined.MicNone, onOpenVoice),
+      CommandItem(stringResource(R.string.browse_sessions), stringResource(R.string.find_previous_conversations), Icons.Outlined.AccessTime, onOpenSessions),
+      CommandItem(stringResource(R.string.providers_models), providerCommandSubtitle(isConnected, providers, models), Icons.Outlined.Inventory2, onOpenProviders),
+      CommandItem(stringResource(R.string.settings), stringResource(R.string.gateway_voice_notifications_privacy), Icons.Outlined.Settings, onOpenSettings),
     )
   val actionRows = quickActions.filter { it.matches(normalizedQuery) }
   val sessionRows =
@@ -97,25 +102,25 @@ internal fun CommandPalette(
           ) {
             ClawPlainIconButton(
               icon = Icons.AutoMirrored.Filled.ArrowBack,
-              contentDescription = "Close search",
+              contentDescription = stringResource(R.string.close_search),
               onClick = onDismiss,
             )
-            Text(text = "Search", style = ClawTheme.type.title, color = ClawTheme.colors.text, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
-            CommandAvatar(text = "OC")
+            Text(text = stringResource(R.string.search), style = ClawTheme.type.title, color = ClawTheme.colors.text, modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+            CommandAvatar(text = stringResource(R.string.openclaw_initials))
           }
         }
 
         item {
-          ClawTextField(value = query, onValueChange = { query = it }, placeholder = "Search OpenClaw")
+          ClawTextField(value = query, onValueChange = { query = it }, placeholder = stringResource(R.string.search_openclaw))
         }
 
         item {
-          CommandSectionLabel(title = "Quick actions")
+          CommandSectionLabel(title = stringResource(R.string.quick_actions))
         }
 
         if (actionRows.isEmpty()) {
           item {
-            ClawEmptyState(title = "No actions found", body = "Try Chat, Voice, Sessions, Providers, or Settings.")
+            ClawEmptyState(title = stringResource(R.string.no_actions_found), body = stringResource(R.string.try_chat_voice_sessions_providers_settings))
           }
         } else {
           item {
@@ -124,14 +129,14 @@ internal fun CommandPalette(
         }
 
         item {
-          CommandSectionLabel(title = "Sessions")
+          CommandSectionLabel(title = stringResource(R.string.sessions))
         }
 
         if (sessionRows.isEmpty()) {
           item {
             ClawPanel {
               Text(
-                text = if (isConnected) "No matching sessions yet." else "Connect the Gateway to search sessions.",
+                text = if (isConnected) stringResource(R.string.no_matching_sessions_yet) else stringResource(R.string.connect_gateway_to_search_sessions),
                 style = ClawTheme.type.body,
                 color = ClawTheme.colors.textMuted,
               )
@@ -145,8 +150,8 @@ internal fun CommandPalette(
                   CommandSessionRow(
                     key = session.key,
                     title = commandSessionTitle(session.displayName),
-                    subtitle = if (pendingRunCount > 0) "Assistant working" else "OpenClaw session",
-                    metadata = session.updatedAtMs?.let(::commandRelativeTime) ?: "now",
+                    subtitle = if (pendingRunCount > 0) stringResource(R.string.assistant_working) else stringResource(R.string.openclaw_session),
+                    metadata = session.updatedAtMs?.let { commandRelativeTime(it) } ?: stringResource(R.string.now),
                   )
                 },
               onOpen = onOpenSession,
@@ -205,7 +210,7 @@ private fun CommandActionRow(row: CommandItem) {
       }
       Icon(
         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-        contentDescription = "Open ${row.title}",
+        contentDescription = stringResource(R.string.open_x, row.title),
         modifier = Modifier.size(17.dp),
         tint = ClawTheme.colors.textMuted,
       )
@@ -259,7 +264,7 @@ private fun CommandSessionListRow(
       Text(text = row.metadata, style = ClawTheme.type.caption, color = ClawTheme.colors.textMuted)
       Icon(
         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-        contentDescription = "Open session",
+        contentDescription = stringResource(R.string.open_session),
         modifier = Modifier.size(17.dp),
         tint = ClawTheme.colors.textMuted,
       )
@@ -289,27 +294,30 @@ private fun CommandSectionLabel(title: String) {
   }
 }
 
+@Composable
 internal fun providerCommandSubtitle(
   isConnected: Boolean,
   providers: List<GatewayModelProviderSummary>,
   models: List<GatewayModelSummary>,
 ): String {
-  if (!isConnected) return "Connect Gateway to view providers"
+  if (!isConnected) return stringResource(R.string.connect_gateway_to_view_providers)
   val readyProviderCount = providerRows(providers = providers, models = models).count { it.ready }
-  if (readyProviderCount > 0) return "$readyProviderCount providers ready"
-  return "No ready providers"
+  if (readyProviderCount > 0) return stringResource(R.string.providers_ready, readyProviderCount)
+  return stringResource(R.string.no_ready_providers)
 }
 
 /** Falls back to the canonical main-session label when gateway display names are blank. */
-private fun commandSessionTitle(displayName: String?): String = displayName?.takeIf { it.isNotBlank() } ?: "Main session"
+@Composable
+private fun commandSessionTitle(displayName: String?): String = displayName?.takeIf { it.isNotBlank() } ?: stringResource(R.string.main_session)
 
 /** Formats command-palette session timestamps for compact rows. */
+@Composable
 private fun commandRelativeTime(updatedAtMs: Long): String {
   val deltaMs = (System.currentTimeMillis() - updatedAtMs).coerceAtLeast(0L)
   val minutes = deltaMs / 60_000L
-  if (minutes < 1) return "now"
-  if (minutes < 60) return "${minutes}m"
+  if (minutes < 1) return stringResource(R.string.now)
+  if (minutes < 60) return stringResource(R.string.in_minutes, minutes)
   val hours = minutes / 60
-  if (hours < 24) return "${hours}h"
-  return "${hours / 24}d"
+  if (hours < 24) return stringResource(R.string.in_hours, hours)
+  return stringResource(R.string.in_days, hours / 24)
 }

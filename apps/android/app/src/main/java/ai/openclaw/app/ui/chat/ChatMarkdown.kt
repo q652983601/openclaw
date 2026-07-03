@@ -6,6 +6,8 @@ import ai.openclaw.app.ui.mobileCaption1
 import ai.openclaw.app.ui.mobileCodeBg
 import ai.openclaw.app.ui.mobileCodeText
 import ai.openclaw.app.ui.mobileTextSecondary
+import ai.openclaw.app.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -694,7 +696,7 @@ private fun InlineBase64Image(
     )
   } else if (imageState.failed) {
     Text(
-      text = "Image unavailable",
+      text = stringResource(R.string.image_unavailable),
       modifier = Modifier.padding(vertical = 2.dp),
       style = mobileCaption1,
       color = mobileTextSecondary,

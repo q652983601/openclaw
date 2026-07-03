@@ -1,5 +1,7 @@
 package ai.openclaw.app.ui.design
 
+import ai.openclaw.app.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -574,7 +576,7 @@ internal fun ClawComponentShowcase(modifier: Modifier = Modifier) {
         )
       }
 
-      ClawTextField(value = prompt, onValueChange = { prompt = it }, placeholder = "Ask OpenClaw anything", minLines = 3)
+      ClawTextField(value = prompt, onValueChange = { prompt = it }, placeholder = stringResource(R.string.ask_openclaw_anything), minLines = 3)
 
       Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         ClawPrimaryButton(text = "Start Chat", onClick = {}, modifier = Modifier.weight(1f))

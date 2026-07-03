@@ -160,7 +160,7 @@ fun ChatPendingToolsBubble(toolCalls: List<ChatPendingToolCall>) {
 
   ChatBubbleContainer(
     style = bubbleStyle("assistant"),
-    roleLabel = "Tools",
+    roleLabel = stringResource(R.string.tools),
   ) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
       Text(stringResource(R.string.running_tools), style = mobileCaption1.copy(fontWeight = FontWeight.SemiBold), color = mobileTextSecondary)
@@ -184,7 +184,7 @@ fun ChatPendingToolsBubble(toolCalls: List<ChatPendingToolCall>) {
       }
       if (toolCalls.size > 6) {
         Text(
-          text = "... +${toolCalls.size - 6} more",
+          text = stringResource(R.string.tools_more_format, toolCalls.size - 6),
           style = mobileCaption1,
           color = mobileTextSecondary,
         )
@@ -198,7 +198,7 @@ fun ChatPendingToolsBubble(toolCalls: List<ChatPendingToolCall>) {
 fun ChatStreamingAssistantBubble(text: String) {
   ChatBubbleContainer(
     style = bubbleStyle("assistant").copy(borderColor = mobileAccent),
-    roleLabel = "OpenClaw · Live",
+    roleLabel = stringResource(R.string.openclaw_live),
   ) {
     ChatMarkdown(text = text, textColor = mobileText)
   }
@@ -232,11 +232,12 @@ private fun bubbleStyle(role: String): ChatBubbleStyle =
       )
   }
 
+@Composable
 private fun roleLabel(role: String): String =
   when (role) {
-    "user" -> "You"
-    "system" -> "System"
-    else -> "OpenClaw"
+    "user" -> stringResource(R.string.role_user)
+    "system" -> stringResource(R.string.role_system)
+    else -> stringResource(R.string.role_assistant)
   }
 
 @Composable
@@ -256,13 +257,13 @@ private fun ChatBase64Image(
     ) {
       Image(
         bitmap = image,
-        contentDescription = mimeType ?: "attachment",
+        contentDescription = mimeType ?: stringResource(R.string.image_attachment_cd),
         contentScale = ContentScale.Fit,
         modifier = Modifier.fillMaxWidth(),
       )
     }
   } else if (imageState.failed) {
-    Text("Unsupported attachment", style = mobileCaption1, color = mobileTextSecondary)
+    Text(stringResource(R.string.unsupported_attachment), style = mobileCaption1, color = mobileTextSecondary)
   }
 }
 

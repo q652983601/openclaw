@@ -23,14 +23,15 @@ internal fun gatewayStatusForDisplay(statusText: String): String = statusText.tr
 
 /** Returns true when the status has enough signal to show diagnostics affordances. */
 internal fun gatewayStatusHasDiagnostics(statusText: String): Boolean {
-  val lower = gatewayStatusForDisplay(statusText).lowercase()
-  return lower != "offline" && !lower.contains("connecting")
+  val lower = statusText.trim().lowercase()
+  return lower != "offline" && lower != "离线" && !lower.contains("connecting") && !lower.contains("连接中")
 }
 
 /** Detects pairing/approval status text so UI can offer pairing-specific actions. */
 internal fun gatewayStatusLooksLikePairing(statusText: String): Boolean {
-  val lower = gatewayStatusForDisplay(statusText).lowercase()
-  return lower.contains("pair") || lower.contains("approve")
+  val lower = statusText.trim().lowercase()
+  return lower.contains("pair") || lower.contains("approve") ||
+    lower.contains("配对") || lower.contains("批准") || lower.contains("待审批")
 }
 
 /** Builds the copyable support prompt with device, endpoint, and exact status context. */

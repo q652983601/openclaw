@@ -34,6 +34,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import ai.openclaw.app.R
 
 /** Settings health screen for gateway/node status and recent gateway logs. */
 @Composable
@@ -67,27 +69,27 @@ internal fun HealthLogsSettingsScreen(
   }
 
   SettingsDetailFrame(
-    title = "Health",
-    subtitle = "Gateway status, phone node readiness, and recent log stream.",
+    title = stringResource(R.string.health_detail_title),
+    subtitle = stringResource(R.string.health_detail_subtitle),
     icon = Icons.Default.Settings,
     onBack = onBack,
   ) {
     SettingsMetricPanel(
       rows =
         listOf(
-          SettingsMetric("Gateway", if (isConnected) "Online" else "Offline"),
-          SettingsMetric("Node", if (isNodeConnected) "Online" else "Waiting"),
-          SettingsMetric("Models", modelCount.size.toString()),
-          SettingsMetric("Logs", logsSummary.entries.size.toString()),
+          SettingsMetric(stringResource(R.string.health_metric_gateway), if (isConnected) stringResource(R.string.health_metric_online) else stringResource(R.string.health_metric_offline)),
+          SettingsMetric(stringResource(R.string.health_metric_node), if (isNodeConnected) stringResource(R.string.health_metric_online) else stringResource(R.string.health_metric_waiting)),
+          SettingsMetric(stringResource(R.string.health_metric_models), modelCount.size.toString()),
+          SettingsMetric(stringResource(R.string.health_metric_logs), logsSummary.entries.size.toString()),
         ),
     )
     HealthStatusPanel(
       gateway = statusText,
-      node = if (isNodeConnected) "Online" else "Waiting",
-      chat = if (chatHealthOk) "Ready" else "Needs connection",
-      models = "${modelCount.size} available",
+      node = if (isNodeConnected) stringResource(R.string.health_metric_online) else stringResource(R.string.health_metric_waiting),
+      chat = if (chatHealthOk) stringResource(R.string.health_status_ready) else stringResource(R.string.health_status_needs_connection),
+      models = stringResource(R.string.health_models_available, modelCount.size),
       voice = talkStatus,
-      runs = if (pendingRunCount > 0) "$pendingRunCount active" else "Idle",
+      runs = if (pendingRunCount > 0) stringResource(R.string.x_runs_active, pendingRunCount) else stringResource(R.string.idle),
       isConnected = isConnected,
       isNodeConnected = isNodeConnected,
       chatHealthOk = chatHealthOk,
@@ -96,7 +98,7 @@ internal fun HealthLogsSettingsScreen(
     )
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
       ClawSecondaryButton(
-        text = if (logsRefreshing) "Refreshing" else "Refresh Logs",
+        text = if (logsRefreshing) stringResource(R.string.refreshing) else stringResource(R.string.refresh_logs),
         onClick = viewModel::refreshHealthLogs,
         enabled = isConnected && !logsRefreshing,
         modifier = Modifier.weight(1f),
@@ -118,28 +120,28 @@ private fun GatewayLogDetailSettingsScreen(
 ) {
   BackHandler(onBack = onBack)
   SettingsDetailFrame(
-    title = "Log Entry",
-    subtitle = "Readable gateway log detail.",
+    title = stringResource(R.string.log_entry_title),
+    subtitle = stringResource(R.string.log_entry_subtitle),
     icon = Icons.Default.Settings,
     onBack = onBack,
   ) {
     SettingsMetricPanel(
       rows =
         listOf(
-          SettingsMetric("Time", compactLogTime(entry.time)),
-          SettingsMetric("Level", entry.level?.uppercase() ?: "LOG"),
-          SettingsMetric("Subsystem", entry.subsystem ?: "Unknown"),
+          SettingsMetric(stringResource(R.string.log_metric_time), compactLogTime(entry.time)),
+          SettingsMetric(stringResource(R.string.log_metric_level), entry.level?.uppercase() ?: stringResource(R.string.unknown_log_level)),
+          SettingsMetric(stringResource(R.string.log_metric_subsystem), entry.subsystem ?: stringResource(R.string.unknown_subsystem)),
         ),
     )
     ClawPanel {
       Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(text = "Message", style = ClawTheme.type.section, color = ClawTheme.colors.text)
+        Text(text = stringResource(R.string.log_message), style = ClawTheme.type.section, color = ClawTheme.colors.text)
         Text(text = entry.message, style = ClawTheme.type.body, color = ClawTheme.colors.text)
       }
     }
     ClawPanel {
       Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-        Text(text = "Raw", style = ClawTheme.type.section, color = ClawTheme.colors.text)
+        Text(text = stringResource(R.string.log_raw), style = ClawTheme.type.section, color = ClawTheme.colors.text)
         Text(
           text = entry.raw.take(4_000),
           style = ClawTheme.type.caption,
@@ -166,17 +168,17 @@ private fun HealthStatusPanel(
 ) {
   ClawPanel(contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp)) {
     Column {
-      ClawStatusRow(title = "Gateway", value = gateway, healthy = isConnected)
+      ClawStatusRow(title = stringResource(R.string.health_metric_gateway), value = gateway, healthy = isConnected)
       HorizontalDivider(color = ClawTheme.colors.border, thickness = 1.dp)
-      ClawStatusRow(title = "Phone Node", value = node, healthy = isNodeConnected)
+      ClawStatusRow(title = stringResource(R.string.health_status_phone_node), value = node, healthy = isNodeConnected)
       HorizontalDivider(color = ClawTheme.colors.border, thickness = 1.dp)
-      ClawStatusRow(title = "Chat", value = chat, healthy = chatHealthOk)
+      ClawStatusRow(title = stringResource(R.string.health_status_chat), value = chat, healthy = chatHealthOk)
       HorizontalDivider(color = ClawTheme.colors.border, thickness = 1.dp)
-      ClawStatusRow(title = "Models", value = models, healthy = modelsReady)
+      ClawStatusRow(title = stringResource(R.string.health_metric_models), value = models, healthy = modelsReady)
       HorizontalDivider(color = ClawTheme.colors.border, thickness = 1.dp)
-      ClawStatusRow(title = "Voice", value = voice, healthy = voiceReady)
+      ClawStatusRow(title = stringResource(R.string.health_voice_status), value = voice, healthy = voiceReady)
       HorizontalDivider(color = ClawTheme.colors.border, thickness = 1.dp)
-      ClawStatusRow(title = "Runs", value = runs, healthy = true)
+      ClawStatusRow(title = stringResource(R.string.health_runs_status), value = runs, healthy = true)
     }
   }
 }
@@ -189,7 +191,7 @@ private fun GatewayLogsPanel(
 ) {
   Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-      Text(text = "RECENT LOGS", style = ClawTheme.type.caption, color = ClawTheme.colors.textMuted)
+      Text(text = stringResource(R.string.recent_logs), style = ClawTheme.type.caption, color = ClawTheme.colors.textMuted)
       summary.fileName?.let { fileName ->
         Text(text = fileName, style = ClawTheme.type.caption, color = ClawTheme.colors.textSubtle, maxLines = 1, overflow = TextOverflow.Ellipsis)
       }
@@ -197,11 +199,11 @@ private fun GatewayLogsPanel(
     when {
       !isConnected ->
         ClawPanel {
-          Text(text = "Connect the gateway to load recent logs.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+          Text(text = stringResource(R.string.connect_gateway_load_logs), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
         }
       summary.entries.isEmpty() ->
         ClawPanel {
-          Text(text = "No recent log entries.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+          Text(text = stringResource(R.string.no_recent_log_entries), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
         }
       else ->
         ClawPanel(contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp)) {
@@ -217,7 +219,7 @@ private fun GatewayLogsPanel(
         }
     }
     if (summary.truncated) {
-      Text(text = "Showing the latest log chunk.", style = ClawTheme.type.caption, color = ClawTheme.colors.textSubtle)
+      Text(text = stringResource(R.string.showing_latest_log_chunk), style = ClawTheme.type.caption, color = ClawTheme.colors.textSubtle)
     }
   }
 }
@@ -231,7 +233,7 @@ private fun GatewayLogRow(
     modifier =
       Modifier
         .fillMaxWidth()
-        .clickable(onClickLabel = "Open log entry", onClick = onClick)
+        .clickable(onClickLabel = stringResource(R.string.open_log_entry), onClick = onClick)
         .padding(horizontal = 10.dp, vertical = 7.dp),
     verticalAlignment = Alignment.Top,
     horizontalArrangement = Arrangement.spacedBy(9.dp),
@@ -243,7 +245,7 @@ private fun GatewayLogRow(
         Text(text = subsystem, style = ClawTheme.type.caption, color = ClawTheme.colors.textSubtle, maxLines = 1, overflow = TextOverflow.Ellipsis)
       }
     }
-    ClawStatusPill(text = entry.level?.uppercase() ?: "LOG", status = logLevelStatus(entry.level))
+    ClawStatusPill(text = entry.level?.uppercase() ?: stringResource(R.string.unknown_log_level), status = logLevelStatus(entry.level))
     Icon(
       imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
       contentDescription = null,
@@ -252,9 +254,10 @@ private fun GatewayLogRow(
   }
 }
 
+@Composable
 private fun compactLogTime(value: String?): String {
   val raw = value?.trim().orEmpty()
-  if (raw.isEmpty()) return "--:--"
+  if (raw.isEmpty()) return stringResource(R.string.log_time_placeholder)
   // Gateway log timestamps may be ISO strings or already-compact fragments;
   // keep only the HH:mm portion when present.
   val time =

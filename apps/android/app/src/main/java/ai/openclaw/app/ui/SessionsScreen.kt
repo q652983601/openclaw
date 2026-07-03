@@ -1,11 +1,13 @@
 package ai.openclaw.app.ui
 
 import ai.openclaw.app.MainViewModel
+import ai.openclaw.app.R
 import ai.openclaw.app.ui.design.ClawEmptyState
 import ai.openclaw.app.ui.design.ClawPlainIconButton
 import ai.openclaw.app.ui.design.ClawPrimaryButton
 import ai.openclaw.app.ui.design.ClawScaffold
 import ai.openclaw.app.ui.design.ClawTheme
+import android.content.Context
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -52,6 +54,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -92,6 +96,8 @@ internal fun SessionsScreen(
     }
   }
 
+  val context = LocalContext.current
+
   ClawScaffold(
     contentPadding = PaddingValues(start = 16.dp, top = 10.dp, end = 16.dp, bottom = 4.dp),
     contentWindowInsets = WindowInsets.safeDrawing.only(WindowInsetsSides.Top + WindowInsetsSides.Horizontal),
@@ -107,16 +113,16 @@ internal fun SessionsScreen(
           verticalAlignment = Alignment.CenterVertically,
           horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-          Text(text = "Sessions", style = ClawTheme.type.display.copy(fontSize = 24.sp, lineHeight = 28.sp), color = ClawTheme.colors.text, modifier = Modifier.weight(1f))
-          ClawPlainIconButton(icon = Icons.Default.Search, contentDescription = "Search sessions", onClick = onOpenCommand)
-          ClawPlainIconButton(icon = Icons.Default.SwapVert, contentDescription = "Reverse session sort", onClick = { recentFirst = !recentFirst })
+          Text(text = stringResource(R.string.sessions_title), style = ClawTheme.type.display.copy(fontSize = 24.sp, lineHeight = 28.sp), color = ClawTheme.colors.text, modifier = Modifier.weight(1f))
+          ClawPlainIconButton(icon = Icons.Default.Search, contentDescription = stringResource(R.string.search_sessions), onClick = onOpenCommand)
+          ClawPlainIconButton(icon = Icons.Default.SwapVert, contentDescription = stringResource(R.string.reverse_session_sort), onClick = { recentFirst = !recentFirst })
         }
       }
 
       item {
         Row(horizontalArrangement = Arrangement.spacedBy(5.dp)) {
-          FilterPill(text = "Recent", icon = Icons.Outlined.AccessTime, active = filter == SessionFilter.Recent, onClick = { filter = SessionFilter.Recent })
-          FilterPill(text = "Current", icon = Icons.Outlined.MicNone, active = filter == SessionFilter.Current, showDot = sessions.any { it.key == chatSessionKey }, onClick = { filter = SessionFilter.Current })
+          FilterPill(text = stringResource(R.string.recent_filter), icon = Icons.Outlined.AccessTime, active = filter == SessionFilter.Recent, onClick = { filter = SessionFilter.Recent })
+          FilterPill(text = stringResource(R.string.current_filter), icon = Icons.Outlined.MicNone, active = filter == SessionFilter.Current, showDot = sessions.any { it.key == chatSessionKey }, onClick = { filter = SessionFilter.Current })
         }
       }
 
@@ -131,15 +137,15 @@ internal fun SessionsScreen(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
           ) {
-            Text(text = "Sort: ${if (recentFirst) "Newest" else "Oldest"}", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+            Text(text = stringResource(R.string.sort_label, if (recentFirst) stringResource(R.string.sort_newest) else stringResource(R.string.sort_oldest)), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
             Icon(imageVector = Icons.Default.KeyboardArrowDown, contentDescription = null, modifier = Modifier.size(11.dp), tint = ClawTheme.colors.textMuted)
           }
-          SessionOutlineIconButton(icon = Icons.Default.Storage, contentDescription = "Toggle session layout", onClick = { compactLayout = !compactLayout })
+          SessionOutlineIconButton(icon = Icons.Default.Storage, contentDescription = stringResource(R.string.toggle_session_layout), onClick = { compactLayout = !compactLayout })
         }
       }
 
       item {
-        Text(text = if (compactLayout) "Layout: Compact" else "Layout: Detailed", style = ClawTheme.type.caption, color = ClawTheme.colors.textSubtle)
+        Text(text = if (compactLayout) stringResource(R.string.layout_compact) else stringResource(R.string.layout_detailed), style = ClawTheme.type.caption, color = ClawTheme.colors.textSubtle)
       }
 
       if (visibleSessions.isEmpty()) {
@@ -149,9 +155,9 @@ internal fun SessionsScreen(
             contentAlignment = Alignment.Center,
           ) {
             ClawEmptyState(
-              title = emptySessionTitle(filter),
-              body = emptySessionBody(filter),
-              action = { ClawPrimaryButton(text = "Start Chat", onClick = onOpenChat) },
+              title = emptySessionTitle(context, filter),
+              body = emptySessionBody(context, filter),
+              action = { ClawPrimaryButton(text = stringResource(R.string.start_chat), onClick = onOpenChat) },
             )
           }
         }
@@ -159,9 +165,9 @@ internal fun SessionsScreen(
         items(visibleSessions, key = { it.key }) { session ->
           val active = session.key == chatSessionKey
           SessionRow(
-            title = displaySessionTitle(session.displayName),
-            subtitle = if (active) "Current session" else "OpenClaw session",
-            metadata = session.updatedAtMs?.let(::relativeSessionTime) ?: "now",
+            title = displaySessionTitle(context, session.displayName),
+            subtitle = if (active) stringResource(R.string.current_session) else stringResource(R.string.openclaw_session),
+            metadata = session.updatedAtMs?.let { relativeSessionTime(context, it) } ?: stringResource(R.string.now),
             active = active,
             compact = compactLayout,
             onClick = {
@@ -258,8 +264,8 @@ private fun SessionRow(
           if (!compact) {
             Text(text = subtitle, style = ClawTheme.type.caption.copy(fontSize = 12.5.sp, lineHeight = 16.sp), color = ClawTheme.colors.textMuted, maxLines = 1)
             Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-              SessionMiniTag(text = "Workspace")
-              SessionMiniTag(text = if (active) "Current" else "OpenClaw")
+              SessionMiniTag(text = stringResource(R.string.workspace_tag))
+              SessionMiniTag(text = if (active) stringResource(R.string.current_tag) else stringResource(R.string.openclaw_brand))
             }
           }
         }
@@ -312,29 +318,29 @@ private enum class SessionFilter {
 }
 
 /** Empty-state title selected by the active session browser filter. */
-private fun emptySessionTitle(filter: SessionFilter): String =
+private fun emptySessionTitle(context: Context, filter: SessionFilter): String =
   when (filter) {
-    SessionFilter.Recent -> "No sessions yet"
-    SessionFilter.Current -> "No current session"
+    SessionFilter.Recent -> context.getString(R.string.no_sessions_yet)
+    SessionFilter.Current -> context.getString(R.string.no_current_session)
   }
 
 /** Empty-state body selected by the active session browser filter. */
-private fun emptySessionBody(filter: SessionFilter): String =
+private fun emptySessionBody(context: Context, filter: SessionFilter): String =
   when (filter) {
-    SessionFilter.Recent -> "Start a new conversation and it will show up here."
-    SessionFilter.Current -> "Open Chat to start or resume the current session."
+    SessionFilter.Recent -> context.getString(R.string.start_new_conversation_hint)
+    SessionFilter.Current -> context.getString(R.string.open_chat_current_hint)
   }
 
 /** Formats session timestamps for compact mobile metadata. */
-private fun relativeSessionTime(updatedAtMs: Long): String {
+private fun relativeSessionTime(context: Context, updatedAtMs: Long): String {
   val deltaMs = (System.currentTimeMillis() - updatedAtMs).coerceAtLeast(0L)
   val minutes = deltaMs / 60_000L
-  if (minutes < 1) return "now"
-  if (minutes < 60) return "${minutes}m"
+  if (minutes < 1) return context.getString(R.string.now)
+  if (minutes < 60) return context.getString(R.string.minutes_ago_format, minutes)
   val hours = minutes / 60
-  if (hours < 24) return "${hours}h"
-  return "${hours / 24}d"
+  if (hours < 24) return context.getString(R.string.hours_ago_format, hours)
+  return context.getString(R.string.days_ago_format, hours / 24)
 }
 
 /** Falls back to the canonical main-session label when gateway display names are blank. */
-private fun displaySessionTitle(displayName: String?): String = displayName?.takeIf { it.isNotBlank() } ?: "Main session"
+private fun displaySessionTitle(context: Context, displayName: String?): String = displayName?.takeIf { it.isNotBlank() } ?: context.getString(R.string.main_session)

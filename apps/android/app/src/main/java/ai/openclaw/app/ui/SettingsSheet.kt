@@ -121,15 +121,15 @@ fun SettingsSheet(viewModel: MainViewModel) {
       when (notificationForwardingMode) {
         NotificationPackageFilterMode.Allowlist ->
           if (notificationForwardingPackages.isEmpty()) {
-            "Selected: none — allowlist mode forwards nothing until you add apps."
+            context.getString(R.string.allowlist_none_summary)
           } else {
-            "Selected: ${notificationForwardingPackages.size} app(s) allowed."
+            context.getString(R.string.allowlist_count_summary, notificationForwardingPackages.size)
           }
         NotificationPackageFilterMode.Blocklist ->
           if (notificationForwardingPackages.isEmpty()) {
-            "Selected: none — blocklist mode forwards all apps except OpenClaw."
+            context.getString(R.string.blocklist_none_summary)
           } else {
-            "Selected: ${notificationForwardingPackages.size} app(s) blocked."
+            context.getString(R.string.blocklist_count_summary, notificationForwardingPackages.size)
           }
       }
     }
@@ -475,7 +475,7 @@ fun SettingsSheet(viewModel: MainViewModel) {
       // ── Node ──
       item {
         Text(
-          "DEVICE",
+          stringResource(R.string.device),
           style = mobileCaption1.copy(fontWeight = FontWeight.Bold, letterSpacing = 1.sp),
           color = mobileAccent,
         )
@@ -511,9 +511,9 @@ fun SettingsSheet(viewModel: MainViewModel) {
               supportingContent = {
                 Text(
                   if (assistantRoleHeld) {
-                    "OpenClaw is registered as the device assistant."
+                    stringResource(R.string.openclaw_registered_as_device_assistant)
                   } else {
-                    "Let Android launch OpenClaw from the assistant gesture. Google Assistant App Actions still work separately."
+                    stringResource(R.string.launch_from_assistant_gesture)
                   },
                   style = mobileCallout,
                 )
@@ -531,7 +531,7 @@ fun SettingsSheet(viewModel: MainViewModel) {
                   shape = RoundedCornerShape(14.dp),
                 ) {
                   Text(
-                    if (assistantRoleHeld) "Manage" else "Enable",
+                    if (assistantRoleHeld) stringResource(R.string.manage) else stringResource(R.string.enable),
                     style = mobileCallout.copy(fontWeight = FontWeight.Bold),
                   )
                 }
@@ -544,7 +544,7 @@ fun SettingsSheet(viewModel: MainViewModel) {
       // ── Media ──
       item {
         Text(
-          "MEDIA",
+          stringResource(R.string.media),
           style = mobileCaption1.copy(fontWeight = FontWeight.Bold, letterSpacing = 1.sp),
           color = mobileAccent,
         )
@@ -557,7 +557,7 @@ fun SettingsSheet(viewModel: MainViewModel) {
             headlineContent = { Text(stringResource(R.string.microphone), style = mobileHeadline) },
             supportingContent = {
               Text(
-                if (micPermissionGranted) "Granted" else "Required for voice transcription.",
+                if (micPermissionGranted) stringResource(R.string.granted) else stringResource(R.string.required_for_voice_transcription),
                 style = mobileCallout,
               )
             },
@@ -574,7 +574,7 @@ fun SettingsSheet(viewModel: MainViewModel) {
                 shape = RoundedCornerShape(14.dp),
               ) {
                 Text(
-                  if (micPermissionGranted) "Manage" else "Grant",
+                  if (micPermissionGranted) stringResource(R.string.manage) else stringResource(R.string.grant),
                   style = mobileCallout.copy(fontWeight = FontWeight.Bold),
                 )
               }
@@ -594,7 +594,7 @@ fun SettingsSheet(viewModel: MainViewModel) {
       // ── Notifications & Messaging ──
       item {
         Text(
-          "NOTIFICATIONS",
+          stringResource(R.string.notifications),
           style = mobileCaption1.copy(fontWeight = FontWeight.Bold, letterSpacing = 1.sp),
           color = mobileAccent,
         )
@@ -621,7 +621,7 @@ fun SettingsSheet(viewModel: MainViewModel) {
                 shape = RoundedCornerShape(14.dp),
               ) {
                 Text(
-                  if (notificationsPermissionGranted) "Manage" else "Grant",
+                  if (notificationsPermissionGranted) stringResource(R.string.manage) else stringResource(R.string.grant),
                   style = mobileCallout.copy(fontWeight = FontWeight.Bold),
                 )
               }
@@ -634,7 +634,7 @@ fun SettingsSheet(viewModel: MainViewModel) {
             headlineContent = { Text(stringResource(R.string.notification_listener_access), style = mobileHeadline) },
             supportingContent = {
               Text(
-                "Required for `notifications.list`, `notifications.actions`, and forwarded notification events.",
+                stringResource(R.string.notification_listener_required_desc),
                 style = mobileCallout,
               )
             },
@@ -645,7 +645,7 @@ fun SettingsSheet(viewModel: MainViewModel) {
                 shape = RoundedCornerShape(14.dp),
               ) {
                 Text(
-                  if (notificationListenerEnabled) "Manage" else "Enable",
+                  if (notificationListenerEnabled) stringResource(R.string.manage) else stringResource(R.string.enable),
                   style = mobileCallout.copy(fontWeight = FontWeight.Bold),
                 )
               }
@@ -676,9 +676,9 @@ fun SettingsSheet(viewModel: MainViewModel) {
                 ) {
                   Text(
                     if (smsPermissionGranted) {
-                      "Manage"
+                      stringResource(R.string.manage)
                     } else {
-                      "Grant"
+                      stringResource(R.string.grant)
                     },
                     style = mobileCallout.copy(fontWeight = FontWeight.Bold),
                   )
@@ -696,9 +696,9 @@ fun SettingsSheet(viewModel: MainViewModel) {
           supportingContent = {
             Text(
               if (notificationListenerEnabled) {
-                "Forward listener events into gateway node events. Off by default until you enable it."
+                stringResource(R.string.forward_listener_events_hint)
               } else {
-                "Notification listener access is off, so no notification events can be forwarded yet."
+                stringResource(R.string.notification_listener_access_off)
               },
               style = mobileCallout,
             )
@@ -715,9 +715,9 @@ fun SettingsSheet(viewModel: MainViewModel) {
       item {
         Text(
           if (notificationListenerEnabled) {
-            "Forwarding is available when enabled below."
+            stringResource(R.string.forwarding_available_when_enabled)
           } else {
-            "Forwarding controls stay disabled until Notification Listener Access is enabled in system Settings."
+            stringResource(R.string.forwarding_controls_disabled_until_listener_enabled)
           },
           style = mobileCallout,
           color = mobileTextSecondary,
@@ -774,7 +774,7 @@ fun SettingsSheet(viewModel: MainViewModel) {
             shape = RoundedCornerShape(14.dp),
           ) {
             Text(
-              if (notificationPickerExpanded) "Close App Picker" else "Open App Picker",
+              if (notificationPickerExpanded) stringResource(R.string.close_app_picker) else stringResource(R.string.open_app_picker),
               style = mobileCallout.copy(fontWeight = FontWeight.Bold),
             )
           }
@@ -950,14 +950,14 @@ fun SettingsSheet(viewModel: MainViewModel) {
           onValueChange = { notificationSessionKeyDraft = it },
           label = {
             Text(
-              "Route Session Key (optional)",
+              stringResource(R.string.route_session_key),
               style = mobileCaption1,
               color = mobileTextSecondary,
             )
           },
           placeholder = {
             Text(
-              "Blank keeps notification events on this device's default notification route. Set a key only to pin forwarding into a different session.",
+              stringResource(R.string.route_session_key_hint),
               style = mobileCaption1,
               color = mobileTextSecondary,
             )
@@ -987,7 +987,7 @@ fun SettingsSheet(viewModel: MainViewModel) {
       // ── Data Access ──
       item {
         Text(
-          "DATA ACCESS",
+          stringResource(R.string.data_access),
           style = mobileCaption1.copy(fontWeight = FontWeight.Bold, letterSpacing = 1.sp),
           color = mobileAccent,
         )
@@ -1013,7 +1013,7 @@ fun SettingsSheet(viewModel: MainViewModel) {
                   shape = RoundedCornerShape(14.dp),
                 ) {
                   Text(
-                    if (photosPermissionGranted) "Manage" else "Grant",
+                    if (photosPermissionGranted) stringResource(R.string.manage) else stringResource(R.string.grant),
                     style = mobileCallout.copy(fontWeight = FontWeight.Bold),
                   )
                 }
@@ -1041,7 +1041,7 @@ fun SettingsSheet(viewModel: MainViewModel) {
                 shape = RoundedCornerShape(14.dp),
               ) {
                 Text(
-                  if (contactsPermissionGranted) "Manage" else "Grant",
+                  if (contactsPermissionGranted) stringResource(R.string.manage) else stringResource(R.string.grant),
                   style = mobileCallout.copy(fontWeight = FontWeight.Bold),
                 )
               }
@@ -1068,7 +1068,7 @@ fun SettingsSheet(viewModel: MainViewModel) {
                 shape = RoundedCornerShape(14.dp),
               ) {
                 Text(
-                  if (calendarPermissionGranted) "Manage" else "Grant",
+                  if (calendarPermissionGranted) stringResource(R.string.manage) else stringResource(R.string.grant),
                   style = mobileCallout.copy(fontWeight = FontWeight.Bold),
                 )
               }
@@ -1094,7 +1094,7 @@ fun SettingsSheet(viewModel: MainViewModel) {
                   shape = RoundedCornerShape(14.dp),
                 ) {
                   Text(
-                    if (callLogPermissionGranted) "Manage" else "Grant",
+                    if (callLogPermissionGranted) stringResource(R.string.manage) else stringResource(R.string.grant),
                     style = mobileCallout.copy(fontWeight = FontWeight.Bold),
                   )
                 }
@@ -1111,9 +1111,9 @@ fun SettingsSheet(viewModel: MainViewModel) {
               trailingContent = {
                 val motionButtonLabel =
                   when {
-                    !motionPermissionRequired -> "Manage"
-                    motionPermissionGranted -> "Manage"
-                    else -> "Grant"
+                    !motionPermissionRequired -> stringResource(R.string.manage)
+                    motionPermissionGranted -> stringResource(R.string.manage)
+                    else -> stringResource(R.string.grant)
                   }
                 Button(
                   onClick = {
@@ -1137,7 +1137,7 @@ fun SettingsSheet(viewModel: MainViewModel) {
       // ── Location ──
       item {
         Text(
-          "LOCATION",
+          stringResource(R.string.location),
           style = mobileCaption1.copy(fontWeight = FontWeight.Bold, letterSpacing = 1.sp),
           color = mobileAccent,
         )
@@ -1189,7 +1189,7 @@ fun SettingsSheet(viewModel: MainViewModel) {
       // ── Preferences ──
       item {
         Text(
-          "PREFERENCES",
+          stringResource(R.string.preferences),
           style = mobileCaption1.copy(fontWeight = FontWeight.Bold, letterSpacing = 1.sp),
           color = mobileAccent,
         )

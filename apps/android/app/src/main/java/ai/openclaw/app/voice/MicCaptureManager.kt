@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.MediaRecorder
+import ai.openclaw.app.R
 import android.util.Log
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.CancellationException
@@ -85,7 +86,7 @@ internal class MicCaptureManager(
   private val _isListening = MutableStateFlow(false)
   val isListening: StateFlow<Boolean> = _isListening
 
-  private val _statusText = MutableStateFlow("Mic off")
+  private val _statusText = MutableStateFlow(context.getString(R.string.mic_status_off))
   val statusText: StateFlow<String> = _statusText
 
   private val _liveTranscript = MutableStateFlow<String?>(null)
@@ -170,7 +171,7 @@ internal class MicCaptureManager(
           }
         }
       if (pausedForTts) {
-        _statusText.value = if (_isSending.value) "Speaking · waiting for reply" else "Speaking…"
+        _statusText.value = if (_isSending.value) context.getString(R.string.mic_status_speaking_waiting) else context.getString(R.string.mic_status_speaking)
         return
       }
       transcriptionDrainJob?.cancel()
@@ -221,7 +222,7 @@ internal class MicCaptureManager(
         _isListening.value = false
         _inputLevel.value = 0f
         _liveTranscript.value = null
-        _statusText.value = if (_isSending.value) "Speaking · waiting for reply" else "Speaking…"
+        _statusText.value = if (_isSending.value) context.getString(R.string.mic_status_speaking_waiting) else context.getString(R.string.mic_status_speaking)
         true
       }
     if (!shouldPause) return
@@ -240,10 +241,10 @@ internal class MicCaptureManager(
         if (!resume) {
           _statusText.value =
             when {
-              _micEnabled.value && _isSending.value -> "Listening · sending queued voice"
-              _micEnabled.value -> "Listening"
-              _isSending.value -> "Mic off · sending…"
-              else -> "Mic off"
+              _micEnabled.value && _isSending.value -> context.getString(R.string.mic_status_listening_queued)
+              _micEnabled.value -> context.getString(R.string.mic_status_listening)
+              _isSending.value -> context.getString(R.string.mic_status_off_sending)
+              else -> context.getString(R.string.mic_status_off)
             }
         }
         resume
@@ -333,12 +334,12 @@ internal class MicCaptureManager(
             .asStringOrNull()
             ?.trim()
             .orEmpty()
-            .ifEmpty { "Voice request failed" }
+            .ifEmpty { context.getString(R.string.mic_status_voice_request_failed) }
         upsertPendingAssistant(text = errorMessage, isStreaming = false)
         completePendingTurn()
       }
       "aborted" -> {
-        upsertPendingAssistant(text = "Response aborted", isStreaming = false)
+        upsertPendingAssistant(text = context.getString(R.string.mic_status_response_aborted), isStreaming = false)
         completePendingTurn()
       }
     }
@@ -347,12 +348,12 @@ internal class MicCaptureManager(
   private fun start() {
     stopRequested = false
     if (!hasMicPermission()) {
-      _statusText.value = "Microphone permission required"
+      _statusText.value = context.getString(R.string.mic_status_permission_required)
       _micEnabled.value = false
       return
     }
     if (!gatewayConnected) {
-      _statusText.value = "Mic on · waiting for gateway"
+      _statusText.value = context.getString(R.string.mic_status_waiting_gateway)
       return
     }
     if (transcriptionSessionId != null || transcriptionStartJob?.isActive == true) return
@@ -376,7 +377,7 @@ internal class MicCaptureManager(
             restartAfterCancellation = _micEnabled.value && gatewayConnected && !stopRequested
             return@launch
           }
-          _statusText.value = "Transcription unavailable: ${err.message ?: err::class.simpleName}"
+          _statusText.value = context.getString(R.string.mic_status_transcription_unavailable_format, err.message ?: err::class.simpleName ?: "")
           _micEnabled.value = false
           stopTranscription(preserveStatus = true)
         } finally {
@@ -415,7 +416,7 @@ internal class MicCaptureManager(
     _isListening.value = false
     _inputLevel.value = 0f
     if (!preserveStatus) {
-      _statusText.value = if (_isSending.value) "Mic off · sending…" else "Mic off"
+      _statusText.value = if (_isSending.value) context.getString(R.string.mic_status_off_sending) else context.getString(R.string.mic_status_off)
     } else {
       _statusText.value = status
     }
@@ -466,9 +467,9 @@ internal class MicCaptureManager(
     if (_isSending.value) return
     if (!hasQueuedMessages()) {
       if (_micEnabled.value) {
-        _statusText.value = "Listening"
+        _statusText.value = context.getString(R.string.mic_status_listening)
       } else {
-        _statusText.value = "Mic off"
+        _statusText.value = context.getString(R.string.mic_status_off)
       }
       return
     }
@@ -481,7 +482,7 @@ internal class MicCaptureManager(
     _isSending.value = true
     pendingRunTimeoutJob?.cancel()
     pendingRunTimeoutJob = null
-    _statusText.value = if (_micEnabled.value) "Listening · sending queued voice" else "Sending queued voice"
+    _statusText.value = if (_micEnabled.value) context.getString(R.string.mic_status_listening_queued) else context.getString(R.string.mic_status_sending_queued)
 
     scope.launch {
       try {
@@ -501,7 +502,7 @@ internal class MicCaptureManager(
           }
           ack.isTerminalFailure -> {
             completePendingTurn()
-            _statusText.value = "Send failed: Chat failed before the run started; try again."
+            _statusText.value = context.getString(R.string.mic_status_send_failed)
           }
           runId == null -> {
             completePendingTurn()
@@ -764,9 +765,9 @@ internal class MicCaptureManager(
 
   private fun listeningStatus(): String =
     when {
-      _isSending.value -> "Listening · sending queued voice"
+      _isSending.value -> context.getString(R.string.mic_status_listening_queued)
       hasQueuedMessages() -> "Listening · ${queuedMessageCount()} queued"
-      else -> "Listening"
+      else -> context.getString(R.string.mic_status_listening)
     }
 
   private fun pcm16Level(

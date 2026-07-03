@@ -9,6 +9,8 @@ import ai.openclaw.app.ui.design.ClawPanel
 import ai.openclaw.app.ui.design.ClawScaffold
 import ai.openclaw.app.ui.design.ClawSecondaryButton
 import ai.openclaw.app.ui.design.ClawTheme
+import ai.openclaw.app.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -83,12 +85,12 @@ internal fun ProvidersModelsScreen(
               verticalAlignment = Alignment.CenterVertically,
               horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-              ProviderHeaderIconButton(icon = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", onClick = onBack)
+              ProviderHeaderIconButton(icon = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back), onClick = onBack)
             }
             Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
-              Text(text = "Providers & Models", style = ClawTheme.type.display.copy(fontSize = 14.8.sp, lineHeight = 18.sp), color = ClawTheme.colors.text, maxLines = 1)
+              Text(text = stringResource(R.string.providers_models_title), style = ClawTheme.type.display.copy(fontSize = 14.8.sp, lineHeight = 18.sp), color = ClawTheme.colors.text, maxLines = 1)
               Text(
-                text = "Review provider readiness\nand configured models.",
+                text = stringResource(R.string.providers_models_subtitle),
                 style = ClawTheme.type.caption.copy(fontSize = 12.5.sp, lineHeight = 16.sp),
                 color = ClawTheme.colors.textMuted,
               )
@@ -107,12 +109,12 @@ internal fun ProvidersModelsScreen(
         }
 
         item {
-          ProviderSectionLabel(title = "Connected providers")
+          ProviderSectionLabel(title = stringResource(R.string.connected_providers))
         }
 
         item {
           if (!isConnected && providerRows.isEmpty()) {
-            ClawEmptyState(title = "Gateway offline", body = "Connect your Gateway to load provider readiness.")
+            ClawEmptyState(title = stringResource(R.string.gateway_offline_title), body = stringResource(R.string.provider_readiness_connect_hint))
           } else {
             ProviderList(rows = providerRows, refreshing = refreshing)
           }
@@ -151,7 +153,7 @@ internal fun providerRows(
         ProviderRow(
           id = provider.id,
           name = provider.displayName,
-          status = if (ready) "Ready" else "Needs attention",
+          status = if (ready) "ready" else "needs_attention",
           ready = ready,
           modelCount = modelCounts[provider.id] ?: 0,
         )
@@ -164,7 +166,7 @@ internal fun providerRows(
         ProviderRow(
           id = provider,
           name = providerDisplayName(provider),
-          status = "Ready",
+          status = "ready",
           ready = true,
           modelCount = modelCounts[provider] ?: 0,
         )
@@ -206,8 +208,8 @@ private fun ProviderList(
         ProviderListRow(
           ProviderRow(
             id = "loading",
-            name = "Provider catalog",
-            status = if (refreshing) "Loading" else "No providers",
+            name = stringResource(R.string.provider_catalog),
+            status = if (refreshing) stringResource(R.string.loading) else stringResource(R.string.no_providers),
             ready = false,
             modelCount = 0,
           ),
@@ -238,16 +240,16 @@ private fun ProviderOverviewPanel(
   ClawPanel(contentPadding = PaddingValues(horizontal = 12.dp, vertical = 12.dp)) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
       Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        ProviderMetricTile(label = "Ready", value = readyCount.toString(), modifier = Modifier.weight(1f))
-        ProviderMetricTile(label = "Models", value = modelCount.toString(), modifier = Modifier.weight(1f))
-        ProviderMetricTile(label = "Needs", value = needsSetupCount.toString(), modifier = Modifier.weight(1f))
+        ProviderMetricTile(label = stringResource(R.string.ready_metric), value = readyCount.toString(), modifier = Modifier.weight(1f))
+        ProviderMetricTile(label = stringResource(R.string.models_metric), value = modelCount.toString(), modifier = Modifier.weight(1f))
+        ProviderMetricTile(label = stringResource(R.string.needs_metric), value = needsSetupCount.toString(), modifier = Modifier.weight(1f))
       }
       Text(
-        text = if (isConnected) "Refresh to recheck provider readiness from your Gateway." else "Connect your Gateway to view provider readiness.",
+        text = if (isConnected) stringResource(R.string.provider_refresh_hint) else stringResource(R.string.provider_connect_hint),
         style = ClawTheme.type.body,
         color = ClawTheme.colors.textMuted,
       )
-      ClawSecondaryButton(text = if (refreshing) "Refreshing" else "Refresh", onClick = onRefresh, enabled = isConnected && !refreshing, modifier = Modifier.fillMaxWidth())
+      ClawSecondaryButton(text = if (refreshing) stringResource(R.string.refreshing) else stringResource(R.string.refresh), onClick = onRefresh, enabled = isConnected && !refreshing, modifier = Modifier.fillMaxWidth())
     }
   }
 }
@@ -278,11 +280,11 @@ private fun ProviderListRow(row: ProviderRow) {
     ProviderBadge(text = row.name)
     Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(1.dp)) {
       Text(text = row.name, style = ClawTheme.type.body, color = ClawTheme.colors.text, maxLines = 1)
-      Text(text = if (row.modelCount > 0) "${row.modelCount} models" else "No configured models", style = ClawTheme.type.caption.copy(fontSize = 12.5.sp, lineHeight = 16.sp), color = ClawTheme.colors.textMuted, maxLines = 1)
+      Text(text = if (row.modelCount > 0) stringResource(R.string.models_format, row.modelCount) else stringResource(R.string.no_configured_models), style = ClawTheme.type.caption.copy(fontSize = 12.5.sp, lineHeight = 16.sp), color = ClawTheme.colors.textMuted, maxLines = 1)
     }
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp)) {
       Box(modifier = Modifier.size(4.5.dp).clip(CircleShape).background(if (row.ready) ClawTheme.colors.success else ClawTheme.colors.warning))
-      Text(text = row.status, style = ClawTheme.type.caption.copy(fontSize = 12.5.sp, lineHeight = 16.sp), color = ClawTheme.colors.textMuted, maxLines = 1)
+      Text(text = if (row.ready) stringResource(R.string.provider_status_ready) else stringResource(R.string.provider_status_needs_attention), style = ClawTheme.type.caption.copy(fontSize = 12.5.sp, lineHeight = 16.sp), color = ClawTheme.colors.textMuted, maxLines = 1)
     }
   }
 }

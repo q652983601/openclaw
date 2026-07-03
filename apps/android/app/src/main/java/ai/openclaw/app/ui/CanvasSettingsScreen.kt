@@ -30,6 +30,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import ai.openclaw.app.R
 
 /** Settings detail surface for live canvas status, refresh, and embedded preview. */
 @Composable
@@ -44,7 +46,7 @@ internal fun CanvasSettingsScreen(
   val rehydrateErrorText by viewModel.canvasRehydrateErrorText.collectAsState()
   val hasLivePage = currentUrl?.isNotBlank() == true
   val showCanvasSurface = isConnected
-  val canvasLabel = if (hasLivePage) "Live page" else "Home canvas"
+  val canvasLabel = if (hasLivePage) stringResource(R.string.canvas_live_page) else stringResource(R.string.canvas_home_canvas)
 
   LaunchedEffect(isConnected) {
     if (isConnected) {
@@ -55,28 +57,28 @@ internal fun CanvasSettingsScreen(
   }
 
   SettingsDetailFrame(
-    title = "Canvas",
-    subtitle = "Current screen output and interactive app surface.",
+    title = stringResource(R.string.canvas_detail_title),
+    subtitle = stringResource(R.string.canvas_detail_subtitle),
     icon = Icons.AutoMirrored.Filled.ScreenShare,
     onBack = onBack,
   ) {
     SettingsMetricPanel(
       rows =
         listOf(
-          SettingsMetric("Connection", if (isConnected) "Online" else "Offline"),
-          SettingsMetric("Surface", canvasLabel),
-          SettingsMetric("Bridge", if (hasLivePage && hydrated) "Ready" else "Standby"),
+          SettingsMetric(stringResource(R.string.canvas_metric_connection), if (isConnected) stringResource(R.string.canvas_bridge_ready) else stringResource(R.string.health_metric_offline)),
+          SettingsMetric(stringResource(R.string.canvas_metric_surface), canvasLabel),
+          SettingsMetric(stringResource(R.string.canvas_metric_bridge), if (hasLivePage && hydrated) stringResource(R.string.canvas_bridge_ready) else stringResource(R.string.canvas_bridge_standby)),
         ),
     )
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
       ClawPrimaryButton(
-        text = if (rehydratePending) "Refreshing" else "Refresh Screen",
+        text = if (rehydratePending) stringResource(R.string.canvas_refreshing) else stringResource(R.string.canvas_refresh_screen),
         onClick = { viewModel.requestCanvasRehydrate(source = "settings_canvas") },
         enabled = isConnected && !rehydratePending,
         modifier = Modifier.weight(1f),
       )
       ClawSecondaryButton(
-        text = "Reconnect",
+        text = stringResource(R.string.canvas_reconnect),
         onClick = viewModel::refreshGatewayConnection,
         modifier = Modifier.weight(1f),
       )
@@ -127,13 +129,13 @@ private fun CanvasStandbyPanel(isConnected: Boolean) {
       }
     }
     Text(
-      text = if (isConnected) "Screen surface ready" else "Connect the gateway",
+      text = if (isConnected) stringResource(R.string.screen_surface_ready) else stringResource(R.string.connect_gateway_for_canvas),
       style = ClawTheme.type.title,
       color = ClawTheme.colors.text,
       modifier = Modifier.padding(top = 18.dp),
     )
     Text(
-      text = if (isConnected) "Canvas output appears here when OpenClaw opens an app surface." else "Canvas output needs an active gateway connection.",
+      text = if (isConnected) stringResource(R.string.canvas_surface_ready_hint) else stringResource(R.string.canvas_needs_gateway),
       style = ClawTheme.type.body,
       color = ClawTheme.colors.textMuted,
       modifier = Modifier.padding(top = 6.dp),

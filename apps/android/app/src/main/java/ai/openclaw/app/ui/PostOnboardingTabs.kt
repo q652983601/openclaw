@@ -2,6 +2,8 @@ package ai.openclaw.app.ui
 
 import ai.openclaw.app.HomeDestination
 import ai.openclaw.app.MainViewModel
+import ai.openclaw.app.R
+import androidx.annotation.StringRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -45,20 +47,25 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 
 private enum class HomeTab(
-  val label: String,
+  @StringRes val labelRes: Int,
   val icon: ImageVector,
 ) {
-  Connect(label = "Connect", icon = Icons.Default.CheckCircle),
-  Chat(label = "Chat", icon = Icons.Default.ChatBubble),
-  Voice(label = "Voice", icon = Icons.Default.RecordVoiceOver),
-  Screen(label = "Screen", icon = Icons.AutoMirrored.Filled.ScreenShare),
-  Settings(label = "Settings", icon = Icons.Default.Settings),
+  Connect(labelRes = R.string.tab_connect, icon = Icons.Default.CheckCircle),
+  Chat(labelRes = R.string.tab_chat, icon = Icons.Default.ChatBubble),
+  Voice(labelRes = R.string.tab_voice, icon = Icons.Default.RecordVoiceOver),
+  Screen(labelRes = R.string.tab_screen, icon = Icons.AutoMirrored.Filled.ScreenShare),
+  Settings(labelRes = R.string.tab_settings, icon = Icons.Default.Settings),
 }
+
+/** Localized label for a home tab. */
+@Composable
+private fun HomeTab.label(): String = stringResource(labelRes)
 
 private enum class StatusVisual {
   Connected,
@@ -269,7 +276,7 @@ private fun TopStatusBar(
       horizontalArrangement = Arrangement.SpaceBetween,
     ) {
       Text(
-        text = "OpenClaw",
+        text = stringResource(R.string.openclaw),
         style = mobileTitle2,
         color = mobileText,
       )
@@ -291,7 +298,7 @@ private fun TopStatusBar(
             Box(modifier = Modifier.padding(4.dp))
           }
           Text(
-            text = statusText.trim().ifEmpty { "Offline" },
+            text = statusText.trim().ifEmpty { stringResource(R.string.offline) },
             style = mobileCaption1,
             color = chipText,
             maxLines = 1,
@@ -333,6 +340,7 @@ private fun BottomTabBar(
       ) {
         HomeTab.entries.forEach { tab ->
           val active = tab == activeTab
+          val tabLabel = tab.label()
           Surface(
             onClick = { onSelect(tab) },
             modifier = Modifier.weight(1f).heightIn(min = 58.dp),
@@ -348,11 +356,11 @@ private fun BottomTabBar(
             ) {
               Icon(
                 imageVector = tab.icon,
-                contentDescription = tab.label,
+                contentDescription = tabLabel,
                 tint = if (active) mobileAccent else mobileTextTertiary,
               )
               Text(
-                text = tab.label,
+                text = tabLabel,
                 color = if (active) mobileAccent else mobileTextSecondary,
                 style = mobileCaption2.copy(fontWeight = if (active) FontWeight.Bold else FontWeight.Medium),
               )

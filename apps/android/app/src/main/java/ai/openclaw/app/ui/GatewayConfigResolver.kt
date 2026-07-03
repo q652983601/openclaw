@@ -1,6 +1,8 @@
 package ai.openclaw.app.ui
 
+import ai.openclaw.app.R
 import ai.openclaw.app.gateway.isLocalCleartextGatewayHost
+import android.content.Context
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.JsonPrimitive
@@ -62,10 +64,6 @@ internal data class GatewayScannedSetupCodeResult(
 )
 
 private val gatewaySetupJson = Json { ignoreUnknownKeys = true }
-private const val remoteGatewaySecurityRule =
-  "Public gateways require wss:// or Tailscale Serve. ws:// is allowed for localhost, the Android emulator, and private LAN IPs."
-private const val remoteGatewaySecurityFix =
-  "Use a private LAN IP for local setup, or enable Tailscale Serve / expose a wss:// gateway URL for remote access."
 
 /** Resolves setup-code or manual UI fields into a connection config. */
 internal fun resolveGatewayConnectConfig(
@@ -223,26 +221,27 @@ internal fun resolveScannedSetupCodeResult(rawInput: String): GatewayScannedSetu
 
 /** Converts endpoint validation errors into setup-source-specific UI copy. */
 internal fun gatewayEndpointValidationMessage(
+  context: Context,
   error: GatewayEndpointValidationError,
   source: GatewayEndpointInputSource,
-): String =
-  when (error) {
+): String {
+  val rule = context.getString(R.string.remote_gateway_security_rule)
+  val fix = context.getString(R.string.remote_gateway_security_fix)
+  return when (error) {
     GatewayEndpointValidationError.INSECURE_REMOTE_URL ->
       when (source) {
-        GatewayEndpointInputSource.SETUP_CODE ->
-          "Setup code points to an insecure remote gateway. $remoteGatewaySecurityRule $remoteGatewaySecurityFix"
-        GatewayEndpointInputSource.QR_SCAN ->
-          "QR code points to an insecure remote gateway. $remoteGatewaySecurityRule $remoteGatewaySecurityFix"
-        GatewayEndpointInputSource.MANUAL ->
-          "$remoteGatewaySecurityRule $remoteGatewaySecurityFix"
+        GatewayEndpointInputSource.SETUP_CODE -> context.getString(R.string.setup_code_insecure_remote, rule, fix)
+        GatewayEndpointInputSource.QR_SCAN -> context.getString(R.string.qr_code_insecure_remote, rule, fix)
+        GatewayEndpointInputSource.MANUAL -> context.getString(R.string.manual_insecure_remote, rule, fix)
       }
     GatewayEndpointValidationError.INVALID_URL ->
       when (source) {
-        GatewayEndpointInputSource.SETUP_CODE -> "Setup code has invalid gateway URL."
-        GatewayEndpointInputSource.QR_SCAN -> "QR code did not contain a valid setup code."
-        GatewayEndpointInputSource.MANUAL -> "Enter a valid manual endpoint to connect."
+        GatewayEndpointInputSource.SETUP_CODE -> context.getString(R.string.setup_code_invalid_url)
+        GatewayEndpointInputSource.QR_SCAN -> context.getString(R.string.qr_code_invalid_setup_code)
+        GatewayEndpointInputSource.MANUAL -> context.getString(R.string.manual_enter_valid_endpoint)
       }
   }
+}
 
 /** Builds a URL from manual host/port/tls fields for shared endpoint parsing. */
 internal fun composeGatewayManualUrl(

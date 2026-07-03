@@ -308,7 +308,7 @@ class NodeRuntime(
   private val _nodeCapabilityApprovalState = MutableStateFlow(GatewayNodeApprovalState.Loading)
   val nodeCapabilityApprovalState: StateFlow<GatewayNodeApprovalState> = _nodeCapabilityApprovalState.asStateFlow()
 
-  private val _statusText = MutableStateFlow("Offline")
+  private val _statusText = MutableStateFlow(appContext.getString(R.string.status_offline))
   val statusText: StateFlow<String> = _statusText.asStateFlow()
   private val _gatewayConnectionProblem = MutableStateFlow<GatewayConnectionProblem?>(null)
   val gatewayConnectionProblem: StateFlow<GatewayConnectionProblem?> = _gatewayConnectionProblem.asStateFlow()
@@ -438,8 +438,8 @@ class NodeRuntime(
 
   @Volatile private var nodePresenceAliveLastSuccessAtMs: Long? = null
   private var operatorConnected = false
-  private var operatorStatusText: String = "Offline"
-  private var nodeStatusText: String = "Offline"
+  private var operatorStatusText: String = appContext.getString(R.string.status_offline)
+  private var nodeStatusText: String = appContext.getString(R.string.status_offline)
 
   private val operatorSession =
     GatewaySession(
@@ -449,7 +449,7 @@ class NodeRuntime(
       onConnected = { hello ->
         _gatewayConnectionProblem.value = null
         operatorConnected = true
-        operatorStatusText = "Connected"
+        operatorStatusText = appContext.getString(R.string.status_connected)
         _serverName.value = hello.serverName
         _remoteAddress.value = hello.remoteAddress
         _gatewayVersion.value = hello.serverVersion
@@ -735,17 +735,18 @@ class NodeRuntime(
     _isConnected.value = operatorConnected
     val operator = operatorStatusText.trim()
     val node = nodeStatusText.trim()
+    val offlineLabel = appContext.getString(R.string.status_offline)
     _statusText.value =
       when {
-        operatorConnected && _nodeConnected.value -> "Connected"
-        operatorConnected && !_nodeConnected.value -> "Connected (node offline)"
+        operatorConnected && _nodeConnected.value -> appContext.getString(R.string.status_connected)
+        operatorConnected && !_nodeConnected.value -> appContext.getString(R.string.status_connected_node_offline)
         !operatorConnected && _nodeConnected.value ->
-          if (operator.isNotEmpty() && operator != "Offline") {
-            "Connected (operator: $operator)"
+          if (operator.isNotEmpty() && operator != offlineLabel) {
+            appContext.getString(R.string.status_connected_operator_format, operator)
           } else {
-            "Connected (operator offline)"
+            appContext.getString(R.string.status_connected_operator_offline)
           }
-        operator.isNotBlank() && operator != "Offline" -> operator
+        operator.isNotBlank() && operator != offlineLabel -> operator
         else -> node
       }
     updateHomeCanvasState()

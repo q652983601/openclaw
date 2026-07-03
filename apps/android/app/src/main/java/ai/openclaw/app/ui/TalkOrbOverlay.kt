@@ -1,5 +1,7 @@
 package ai.openclaw.app.ui
 
+import ai.openclaw.app.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -54,9 +56,9 @@ fun TalkOrbOverlay(
   val showStatus = trimmed.isNotEmpty() && trimmed != "Off"
   val phase =
     when {
-      isSpeaking -> "Speaking"
-      isListening -> "Listening"
-      else -> "Thinking"
+      isSpeaking -> stringResource(R.string.status_speaking)
+      isListening -> stringResource(R.string.status_listening)
+      else -> stringResource(R.string.status_thinking)
     }
 
   Column(
