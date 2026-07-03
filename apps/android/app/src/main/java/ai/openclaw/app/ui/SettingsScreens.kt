@@ -1,5 +1,6 @@
 package ai.openclaw.app.ui
 
+import ai.openclaw.app.R
 import ai.openclaw.app.AppearanceThemeMode
 import ai.openclaw.app.BuildConfig
 import ai.openclaw.app.GatewayAgentSummary
@@ -94,6 +95,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -174,17 +176,17 @@ private fun UsageSettingsScreen(
     }
   }
 
-  SettingsDetailFrame(title = "Usage", subtitle = "Provider limits and quota health.", icon = Icons.Default.Storage, onBack = onBack) {
+  SettingsDetailFrame(title = stringResource(R.string.usage), subtitle = stringResource(R.string.provider_limits), icon = Icons.Default.Storage, onBack = onBack) {
     SettingsMetricPanel(
       rows =
         listOf(
-          SettingsMetric("Providers", providerCount.toString()),
-          SettingsMetric("Issues", issueCount.toString()),
-          SettingsMetric("Updated", formatUsageUpdated(usageSummary.updatedAtMs)),
+          SettingsMetric(stringResource(R.string.providers), providerCount.toString()),
+          SettingsMetric(stringResource(R.string.issues), issueCount.toString()),
+          SettingsMetric(stringResource(R.string.updated), formatUsageUpdated(usageSummary.updatedAtMs)),
         ),
     )
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-      ClawSecondaryButton(text = if (usageRefreshing) "Refreshing" else "Refresh", onClick = viewModel::refreshUsage, enabled = isConnected && !usageRefreshing, modifier = Modifier.weight(1f))
+      ClawSecondaryButton(text = if (usageRefreshing) stringResource(R.string.refreshing) else stringResource(R.string.refresh), onClick = viewModel::refreshUsage, enabled = isConnected && !usageRefreshing, modifier = Modifier.weight(1f))
     }
     usageErrorText?.let { errorText ->
       ClawPanel {
@@ -194,13 +196,13 @@ private fun UsageSettingsScreen(
     when {
       !isConnected ->
         ClawPanel {
-          Text(text = "Connect the gateway to load usage.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+          Text(text = stringResource(R.string.connect_gateway_to_load_usage), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
         }
       usageSummary.providers.isEmpty() ->
         ClawPanel {
           Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
-            Text(text = "No usage data yet.", style = ClawTheme.type.section, color = ClawTheme.colors.text)
-            Text(text = "Provider limits will appear here when your gateway reports them.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+            Text(text = stringResource(R.string.no_usage_data_yet), style = ClawTheme.type.section, color = ClawTheme.colors.text)
+            Text(text = stringResource(R.string.provider_limits_appear), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
           }
         }
       else -> UsageProvidersPanel(providers = usageSummary.providers)
@@ -225,18 +227,18 @@ private fun CronJobsSettingsScreen(
     }
   }
 
-  SettingsDetailFrame(title = "Cron Jobs", subtitle = "Scheduled OpenClaw work from your gateway.", icon = Icons.Default.Bolt, onBack = onBack) {
+  SettingsDetailFrame(title = stringResource(R.string.cron_jobs), subtitle = stringResource(R.string.scheduled_openclaw_work), icon = Icons.Default.Bolt, onBack = onBack) {
     SettingsMetricPanel(
       rows =
         listOf(
-          SettingsMetric("Status", if (cronStatus.enabled) "Enabled" else "Off"),
-          SettingsMetric("Jobs", cronStatus.jobs.toString()),
-          SettingsMetric("Next Wake", formatCronWake(cronStatus.nextWakeAtMs)),
+          SettingsMetric(stringResource(R.string.status), if (cronStatus.enabled) stringResource(R.string.enabled) else stringResource(R.string.off)),
+          SettingsMetric(stringResource(R.string.jobs), cronStatus.jobs.toString()),
+          SettingsMetric(stringResource(R.string.next_wake), formatCronWake(cronStatus.nextWakeAtMs)),
         ),
     )
-    ClawSecondaryButton(text = if (cronRefreshing) "Refreshing" else "Refresh", onClick = viewModel::refreshCronJobs, enabled = isConnected && !cronRefreshing, modifier = Modifier.fillMaxWidth())
+    ClawSecondaryButton(text = if (cronRefreshing) stringResource(R.string.refreshing) else stringResource(R.string.refresh), onClick = viewModel::refreshCronJobs, enabled = isConnected && !cronRefreshing, modifier = Modifier.fillMaxWidth())
     ClawPanel {
-      Text(text = "Android shows scheduled work status. Create and edit schedules from the desktop app.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+      Text(text = stringResource(R.string.cron_jobs_hint), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
     }
     cronErrorText?.let { errorText ->
       ClawPanel {
@@ -246,13 +248,13 @@ private fun CronJobsSettingsScreen(
     when {
       !isConnected ->
         ClawPanel {
-          Text(text = "Connect the gateway to load cron jobs.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+          Text(text = stringResource(R.string.connect_gateway_to_load_cron_jobs), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
         }
       cronJobs.isEmpty() ->
         ClawPanel {
           Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
-            Text(text = "No scheduled jobs.", style = ClawTheme.type.section, color = ClawTheme.colors.text)
-            Text(text = "Create recurring OpenClaw work from the desktop app.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+            Text(text = stringResource(R.string.no_scheduled_jobs), style = ClawTheme.type.section, color = ClawTheme.colors.text)
+            Text(text = stringResource(R.string.create_recurring_openclaw_work), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
           }
         }
       else -> CronJobsPanel(jobs = cronJobs)
@@ -275,22 +277,22 @@ private fun AgentsSettingsScreen(
     }
   }
 
-  SettingsDetailFrame(title = "Agents", subtitle = "Choose and inspect the assistants available on this gateway.", icon = Icons.Default.Person, onBack = onBack) {
+  SettingsDetailFrame(title = stringResource(R.string.agents), subtitle = stringResource(R.string.choose_and_inspect), icon = Icons.Default.Person, onBack = onBack) {
     SettingsMetricPanel(
       rows =
         listOf(
-          SettingsMetric("Available", agents.size.toString()),
-          SettingsMetric("Default", defaultAgentName(agents, defaultAgentId)),
+          SettingsMetric(stringResource(R.string.available), agents.size.toString()),
+          SettingsMetric(stringResource(R.string.default_), defaultAgentName(agents, defaultAgentId)),
         ),
     )
     when {
       !isConnected ->
         ClawPanel {
-          Text(text = "Connect the gateway to load agents.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+          Text(text = stringResource(R.string.connect_gateway_to_load_agents), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
         }
       agents.isEmpty() ->
         ClawPanel {
-          Text(text = "No agents loaded yet.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+          Text(text = stringResource(R.string.no_agents_loaded_yet), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
         }
       else -> AgentsPanel(agents = agents, defaultAgentId = defaultAgentId)
     }
@@ -316,18 +318,18 @@ private fun ApprovalsSettingsScreen(
     }
   }
 
-  SettingsDetailFrame(title = "Approvals", subtitle = "Review actions that need your attention.", icon = Icons.Default.Lock, onBack = onBack) {
+  SettingsDetailFrame(title = stringResource(R.string.approvals), subtitle = stringResource(R.string.review_actions), icon = Icons.Default.Lock, onBack = onBack) {
     SettingsMetricPanel(
       rows =
         listOf(
-          SettingsMetric("Gateway Pending", execApprovals.size.toString()),
-          SettingsMetric("Session Activity", pendingToolCalls.size.toString()),
-          SettingsMetric("Issues", issueCount.toString()),
-          SettingsMetric("Active Runs", pendingRunCount.toString()),
+          SettingsMetric(stringResource(R.string.gateway_pending), execApprovals.size.toString()),
+          SettingsMetric(stringResource(R.string.session_activity), pendingToolCalls.size.toString()),
+          SettingsMetric(stringResource(R.string.issues), issueCount.toString()),
+          SettingsMetric(stringResource(R.string.active_runs), pendingRunCount.toString()),
         ),
     )
     ClawSecondaryButton(
-      text = if (execApprovalsRefreshing) "Refreshing" else "Refresh",
+      text = if (execApprovalsRefreshing) stringResource(R.string.refreshing) else stringResource(R.string.refresh),
       onClick = viewModel::refreshExecApprovals,
       enabled = isConnected && !execApprovalsRefreshing,
       modifier = Modifier.fillMaxWidth(),
@@ -340,23 +342,23 @@ private fun ApprovalsSettingsScreen(
     if (!isConnected) {
       ClawPanel {
         Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
-          Text(text = "Gateway disconnected.", style = ClawTheme.type.section, color = ClawTheme.colors.text)
-          Text(text = "Connect the gateway to load approval requests in the app.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+          Text(text = stringResource(R.string.gateway_disconnected), style = ClawTheme.type.section, color = ClawTheme.colors.text)
+          Text(text = stringResource(R.string.connect_gateway_to_load_approvals), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
         }
       }
     } else if (execApprovals.isEmpty()) {
       ClawPanel {
         Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
-          Text(text = "No gateway approvals.", style = ClawTheme.type.section, color = ClawTheme.colors.text)
-          Text(text = "Exec approval requests will appear here while this phone is connected.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+          Text(text = stringResource(R.string.no_gateway_approvals), style = ClawTheme.type.section, color = ClawTheme.colors.text)
+          Text(text = stringResource(R.string.exec_approval_requests_appear), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
         }
       }
     } else {
       ExecApprovalsPanel(approvals = execApprovals, onResolve = viewModel::resolveExecApproval)
     }
     if (pendingToolCalls.isNotEmpty()) {
-      Text(text = "Session activity", style = ClawTheme.type.section, color = ClawTheme.colors.text)
-      Text(text = "Chat tool calls waiting in the active session remain visible here.", style = ClawTheme.type.caption, color = ClawTheme.colors.textMuted)
+      Text(text = stringResource(R.string.session_activity_title), style = ClawTheme.type.section, color = ClawTheme.colors.text)
+      Text(text = stringResource(R.string.chat_tool_calls_waiting), style = ClawTheme.type.caption, color = ClawTheme.colors.textMuted)
       SessionToolCallsPanel(toolCalls = pendingToolCalls)
     }
   }
@@ -370,11 +372,11 @@ private fun ProfileSettingsScreen(
   val displayName by viewModel.displayName.collectAsState()
   var draft by remember(displayName) { mutableStateOf(displayName.ifBlank { "OpenClaw" }) }
 
-  SettingsDetailFrame(title = "Profile", subtitle = "How this phone appears to OpenClaw.", icon = Icons.Default.Person, onBack = onBack) {
+  SettingsDetailFrame(title = stringResource(R.string.profile), subtitle = stringResource(R.string.profile_subtitle), icon = Icons.Default.Person, onBack = onBack) {
     ClawPanel {
       Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
-        ClawTextField(value = draft, onValueChange = { draft = it }, placeholder = "Device name")
-        ClawPrimaryButton(text = "Save Profile", onClick = { viewModel.setDisplayName(draft) }, enabled = draft.isNotBlank())
+        ClawTextField(value = draft, onValueChange = { draft = it }, placeholder = stringResource(R.string.device_name))
+        ClawPrimaryButton(text = stringResource(R.string.save_profile), onClick = { viewModel.setDisplayName(draft) }, enabled = draft.isNotBlank())
       }
     }
   }
@@ -389,23 +391,23 @@ private fun VoiceSettingsScreen(
   val micEnabled by viewModel.micEnabled.collectAsState()
   val talkModeEnabled by viewModel.talkModeEnabled.collectAsState()
 
-  SettingsDetailFrame(title = "Talk Provider Setup", subtitle = "Configure voice, transport, and playback.", icon = Icons.Default.Mic, onBack = onBack) {
+  SettingsDetailFrame(title = stringResource(R.string.talk_provider_setup), subtitle = stringResource(R.string.talk_provider_setup_subtitle), icon = Icons.Default.Mic, onBack = onBack) {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
       VoiceSetupPanel(
         voiceActive = micEnabled || talkModeEnabled,
       )
-      Text(text = "Audio Test", style = ClawTheme.type.section, color = ClawTheme.colors.text)
-      Text(text = "Check that OpenClaw can speak clearly on this phone.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+      Text(text = stringResource(R.string.audio_test), style = ClawTheme.type.section, color = ClawTheme.colors.text)
+      Text(text = stringResource(R.string.audio_test_desc), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
       SettingsWaveformPanel(active = speakerEnabled, onClick = ::playVoiceSetupTone)
       VoiceSetupActionRow(
-        title = if (speakerEnabled) "Mute speaker" else "Enable speaker",
-        subtitle = if (speakerEnabled) "Replies play aloud" else "Assistant speech muted",
+        title = if (speakerEnabled) stringResource(R.string.mute_speaker) else stringResource(R.string.enable_speaker),
+        subtitle = if (speakerEnabled) stringResource(R.string.replies_play_aloud) else stringResource(R.string.assistant_speech_muted),
         icon = Icons.AutoMirrored.Filled.VolumeUp,
-        statusText = if (speakerEnabled) "On" else "Muted",
+        statusText = if (speakerEnabled) stringResource(R.string.on) else stringResource(R.string.muted),
         ready = speakerEnabled,
         onClick = { viewModel.setSpeakerEnabled(!speakerEnabled) },
       )
-      ClawPrimaryButton(text = "Done", onClick = onBack, modifier = Modifier.fillMaxWidth(), icon = Icons.Default.GraphicEq)
+      ClawPrimaryButton(text = stringResource(R.string.done), onClick = onBack, modifier = Modifier.fillMaxWidth(), icon = Icons.Default.GraphicEq)
     }
   }
 }
@@ -416,24 +418,24 @@ private fun VoiceSetupPanel(
 ) {
   Column(verticalArrangement = Arrangement.spacedBy(9.dp)) {
     VoiceSetupActionRow(
-      title = "Realtime Provider",
-      subtitle = "Gateway voice relay",
+      title = stringResource(R.string.realtime_provider),
+      subtitle = stringResource(R.string.gateway_voice_relay),
       icon = Icons.Default.GraphicEq,
-      statusText = if (voiceActive) "Live" else "Ready",
+      statusText = if (voiceActive) stringResource(R.string.live) else stringResource(R.string.ready),
       ready = true,
     )
     VoiceSetupActionRow(
-      title = "Voice",
-      subtitle = "Voice input",
+      title = stringResource(R.string.voice),
+      subtitle = stringResource(R.string.voice_input),
       icon = Icons.Default.Mic,
-      statusText = "Configured",
+      statusText = stringResource(R.string.configured),
       ready = true,
     )
     VoiceSetupActionRow(
-      title = "Transport",
-      subtitle = "Socket relay",
+      title = stringResource(R.string.transport),
+      subtitle = stringResource(R.string.socket_relay),
       icon = Icons.Default.Bolt,
-      statusText = "Configured",
+      statusText = stringResource(R.string.configured),
       ready = true,
     )
   }
@@ -548,7 +550,7 @@ private fun NotificationSettingsScreen(
   val quietStart by viewModel.notificationForwardingQuietStart.collectAsState()
   val quietEnd by viewModel.notificationForwardingQuietEnd.collectAsState()
   val maxEventsPerMinute by viewModel.notificationForwardingMaxEventsPerMinute.collectAsState()
-  val modeLabel = if (mode == NotificationPackageFilterMode.Blocklist) "Blocklist" else "Allowlist"
+  val modeLabel = if (mode == NotificationPackageFilterMode.Blocklist) stringResource(R.string.blocklist) else stringResource(R.string.allowlist)
   val installedApps = remember(context, packages) { queryInstalledApps(context, packages) }
   var notificationPickerExpanded by remember { mutableStateOf(false) }
   var notificationAppSearch by remember { mutableStateOf("") }
@@ -581,12 +583,15 @@ private fun NotificationSettingsScreen(
     listenerEnabled = DeviceNotificationListenerService.isAccessEnabled(context)
   }
 
-  SettingsDetailFrame(title = "Notifications", subtitle = "Choose what reaches OpenClaw.", icon = Icons.Default.Notifications, onBack = onBack) {
+  val allowlistLabel = stringResource(R.string.allowlist)
+  val blocklistLabel = stringResource(R.string.blocklist)
+
+  SettingsDetailFrame(title = stringResource(R.string.notifications), subtitle = stringResource(R.string.choose_what_reaches), icon = Icons.Default.Notifications, onBack = onBack) {
     SettingsTogglePanel(
       rows =
         listOf(
-          SettingsToggleRow("Forward Notifications", if (enabled) "OpenClaw can receive selected alerts." else "Alerts stay on this phone.", Icons.Default.Notifications, enabled, ::setForwarding),
-          SettingsToggleRow("Quiet Hours", "$quietStart to $quietEnd", Icons.Default.Bolt, quietEnabled) { checked ->
+          SettingsToggleRow(stringResource(R.string.forward_notifications), if (enabled) stringResource(R.string.forward_notifications_on) else stringResource(R.string.forward_notifications_off), Icons.Default.Notifications, enabled, ::setForwarding),
+          SettingsToggleRow(stringResource(R.string.quiet_hours), stringResource(R.string.quiet_hours_window, quietStart, quietEnd), Icons.Default.Bolt, quietEnabled) { checked ->
             viewModel.setNotificationForwardingQuietHours(enabled = checked, start = quietStart, end = quietEnd)
           },
         ),
@@ -594,15 +599,15 @@ private fun NotificationSettingsScreen(
     SettingsMetricPanel(
       rows =
         listOf(
-          SettingsMetric("Policy", modeLabel),
-          SettingsMetric("Selected Apps", packages.size.toString()),
-          SettingsMetric("Rate Limit", "$maxEventsPerMinute/min"),
-          SettingsMetric("Access", if (listenerEnabled) "Granted" else "Setup"),
+          SettingsMetric(stringResource(R.string.policy), modeLabel),
+          SettingsMetric(stringResource(R.string.selected_apps), packages.size.toString()),
+          SettingsMetric(stringResource(R.string.rate_limit), stringResource(R.string.events_per_minute_format, maxEventsPerMinute)),
+          SettingsMetric(stringResource(R.string.access), if (listenerEnabled) stringResource(R.string.granted) else stringResource(R.string.setup)),
         ),
     )
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
       ClawSecondaryButton(
-        text = if (listenerEnabled) "Check Access" else "Open System Access",
+        text = if (listenerEnabled) stringResource(R.string.check_access) else stringResource(R.string.open_system_access),
         onClick = {
           openNotificationListenerSettings(context)
           listenerEnabled = DeviceNotificationListenerService.isAccessEnabled(context)
@@ -612,12 +617,12 @@ private fun NotificationSettingsScreen(
     }
     ClawPanel {
       Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(text = "Forwarding Mode", style = ClawTheme.type.section, color = ClawTheme.colors.text)
+        Text(text = stringResource(R.string.forwarding_mode), style = ClawTheme.type.section, color = ClawTheme.colors.text)
         ClawSegmentedControl(
-          options = listOf("Blocklist", "Allowlist"),
+          options = listOf(blocklistLabel, allowlistLabel),
           selected = modeLabel,
           onSelect = { selected ->
-            viewModel.setNotificationForwardingMode(if (selected == "Allowlist") NotificationPackageFilterMode.Allowlist else NotificationPackageFilterMode.Blocklist)
+            viewModel.setNotificationForwardingMode(if (selected == allowlistLabel) NotificationPackageFilterMode.Allowlist else NotificationPackageFilterMode.Blocklist)
           },
         )
       }
@@ -661,30 +666,30 @@ private fun NotificationPackagePickerPanel(
   val visibleApps = apps.take(NOTIFICATION_PICKER_RESULT_LIMIT)
   ClawPanel {
     Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-      Text(text = "App Filter", style = ClawTheme.type.section, color = ClawTheme.colors.text)
+      Text(text = stringResource(R.string.app_filter), style = ClawTheme.type.section, color = ClawTheme.colors.text)
       Text(
         text = notificationPackageSelectionSummary(mode = mode, selectedCount = selectedPackages.size),
         style = ClawTheme.type.body,
         color = ClawTheme.colors.textMuted,
       )
       ClawSecondaryButton(
-        text = if (expanded) "Close App Picker" else "Open App Picker",
+        text = if (expanded) stringResource(R.string.close_app_picker) else stringResource(R.string.open_app_picker),
         onClick = { onExpandedChange(!expanded) },
         modifier = Modifier.fillMaxWidth(),
       )
       if (expanded) {
-        ClawTextField(value = search, onValueChange = onSearchChange, placeholder = "Search apps")
+        ClawTextField(value = search, onValueChange = onSearchChange, placeholder = stringResource(R.string.search_apps))
         SettingsToggleListRow(
           SettingsToggleRow(
-            title = "Show System Apps",
-            subtitle = "Include Android and background packages.",
+            title = stringResource(R.string.show_system_apps),
+            subtitle = stringResource(R.string.include_android_background_packages),
             icon = Icons.Default.Storage,
             checked = showSystemApps,
             onCheckedChange = onShowSystemAppsChange,
           ),
         )
         if (visibleApps.isEmpty()) {
-          Text(text = "No matching apps.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+          Text(text = stringResource(R.string.no_matching_apps), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
         } else {
           ClawSeparatedColumn(items = visibleApps) { app ->
             NotificationPackageAppRow(
@@ -695,7 +700,7 @@ private fun NotificationPackagePickerPanel(
           }
           if (apps.size > visibleApps.size) {
             Text(
-              text = "Showing ${visibleApps.size} of ${apps.size}. Refine search for more.",
+              text = stringResource(R.string.showing_apps_format, visibleApps.size, apps.size),
               style = ClawTheme.type.caption,
               color = ClawTheme.colors.textMuted,
             )
@@ -803,30 +808,33 @@ private fun PhoneCapabilitiesScreen(
     }
   }
 
-  SettingsDetailFrame(title = "Phone Capabilities", subtitle = "Choose what this phone can share.", icon = Icons.AutoMirrored.Filled.ScreenShare, onBack = onBack) {
+  SettingsDetailFrame(title = stringResource(R.string.phone_capabilities), subtitle = stringResource(R.string.choose_what_share), icon = Icons.AutoMirrored.Filled.ScreenShare, onBack = onBack) {
     SettingsTogglePanel(
       rows =
         listOf(
-          SettingsToggleRow("Camera", "Allow camera tools when requested.", Icons.Default.CameraAlt, cameraEnabled, ::setCameraAccess),
-          SettingsToggleRow("Precise Location", "Share precise location while location is enabled.", Icons.Default.LocationOn, locationPreciseEnabled, ::setPreciseLocation),
+          SettingsToggleRow(stringResource(R.string.camera), stringResource(R.string.allow_camera), Icons.Default.CameraAlt, cameraEnabled, ::setCameraAccess),
+          SettingsToggleRow(stringResource(R.string.precise_location), stringResource(R.string.precise_location_desc), Icons.Default.LocationOn, locationPreciseEnabled, ::setPreciseLocation),
           SettingsToggleRow(
-            "Installed Apps",
-            if (installedAppsSharingEnabled) "OpenClaw can list launcher-visible apps." else "App list stays on this phone.",
+            stringResource(R.string.installed_apps),
+            if (installedAppsSharingEnabled) stringResource(R.string.installed_apps_on) else stringResource(R.string.installed_apps_off),
             Icons.Default.Storage,
             installedAppsSharingEnabled,
             viewModel::setInstalledAppsSharingEnabled,
           ),
-          SettingsToggleRow("Keep Awake", "Keep the node available during active work.", Icons.Default.Bolt, preventSleep, viewModel::setPreventSleep),
-          SettingsToggleRow("Canvas Status", "Show screen-sharing debug state.", Icons.AutoMirrored.Filled.ScreenShare, canvasDebugStatusEnabled, viewModel::setCanvasDebugStatusEnabled),
+          SettingsToggleRow(stringResource(R.string.keep_awake), stringResource(R.string.keep_awake_desc), Icons.Default.Bolt, preventSleep, viewModel::setPreventSleep),
+          SettingsToggleRow(stringResource(R.string.canvas_status), stringResource(R.string.canvas_status_desc), Icons.AutoMirrored.Filled.ScreenShare, canvasDebugStatusEnabled, viewModel::setCanvasDebugStatusEnabled),
         ),
     )
+    val offLabel = stringResource(R.string.off)
+    val whileUsingLabel = stringResource(R.string.while_using)
+
     ClawPanel {
       Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(text = "Location", style = ClawTheme.type.section, color = ClawTheme.colors.text)
+        Text(text = stringResource(R.string.location), style = ClawTheme.type.section, color = ClawTheme.colors.text)
         ClawSegmentedControl(
-          options = listOf("Off", "While Using"),
-          selected = if (locationMode == LocationMode.WhileUsing) "While Using" else "Off",
-          onSelect = { selected -> setLocationAccess(if (selected == "While Using") LocationMode.WhileUsing else LocationMode.Off) },
+          options = listOf(offLabel, whileUsingLabel),
+          selected = if (locationMode == LocationMode.WhileUsing) whileUsingLabel else offLabel,
+          onSelect = { selected -> setLocationAccess(if (selected == whileUsingLabel) LocationMode.WhileUsing else LocationMode.Off) },
         )
       }
     }
@@ -858,32 +866,32 @@ private fun GatewaySettingsScreen(
   var validationText by remember { mutableStateOf<String?>(null) }
   var showSetupCodeHelp by remember { mutableStateOf(false) }
 
-  SettingsDetailFrame(title = "Gateway", subtitle = "Connection between this phone and OpenClaw.", icon = Icons.Default.Cloud, onBack = onBack) {
+  SettingsDetailFrame(title = stringResource(R.string.gateway), subtitle = stringResource(R.string.connection_between), icon = Icons.Default.Cloud, onBack = onBack) {
     SettingsMetricPanel(
       rows =
         listOf(
-          SettingsMetric("Connection", if (isConnected) "Connected" else "Offline"),
-          SettingsMetric("Node", if (isNodeConnected) "Online" else "Not paired"),
-          SettingsMetric("Gateway", serverName?.takeIf { it.isNotBlank() } ?: "Home Gateway"),
-          SettingsMetric("Address", remoteAddress?.takeIf { it.isNotBlank() } ?: "Not available"),
-          SettingsMetric("Status", gatewayStatusLabel(statusText = statusText, isConnected = isConnected)),
+          SettingsMetric(stringResource(R.string.connection), if (isConnected) stringResource(R.string.connected) else stringResource(R.string.offline)),
+          SettingsMetric(stringResource(R.string.node), if (isNodeConnected) stringResource(R.string.online) else stringResource(R.string.not_paired)),
+          SettingsMetric(stringResource(R.string.gateway_label), serverName?.takeIf { it.isNotBlank() } ?: stringResource(R.string.home_gateway)),
+          SettingsMetric(stringResource(R.string.address), remoteAddress?.takeIf { it.isNotBlank() } ?: stringResource(R.string.not_available)),
+          SettingsMetric(stringResource(R.string.status), gatewayStatusLabel(statusText = statusText, isConnected = isConnected)),
         ),
     )
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-      ClawPrimaryButton(text = "Reconnect", onClick = viewModel::refreshGatewayConnection, modifier = Modifier.weight(1f))
-      ClawSecondaryButton(text = "Disconnect", onClick = viewModel::disconnect, modifier = Modifier.weight(1f))
+      ClawPrimaryButton(text = stringResource(R.string.reconnect), onClick = viewModel::refreshGatewayConnection, modifier = Modifier.weight(1f))
+      ClawSecondaryButton(text = stringResource(R.string.disconnect), onClick = viewModel::disconnect, modifier = Modifier.weight(1f))
     }
     ClawPanel {
       Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text(text = "Pair New Gateway", style = ClawTheme.type.section, color = ClawTheme.colors.text)
-        Text(text = "Clear this phone's saved gateway access and scan a fresh setup code.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+        Text(text = stringResource(R.string.pair_new_gateway), style = ClawTheme.type.section, color = ClawTheme.colors.text)
+        Text(text = stringResource(R.string.clear_gateway_access), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-          ClawSecondaryButton(text = "Pair New Gateway", onClick = viewModel::pairNewGateway, modifier = Modifier.weight(1f), icon = Icons.Default.QrCode2)
-          ClawSecondaryButton(text = "Setup Code", onClick = { showSetupCodeHelp = !showSetupCodeHelp }, modifier = Modifier.weight(1f), icon = Icons.Default.Info)
+          ClawSecondaryButton(text = stringResource(R.string.pair_new_gateway), onClick = viewModel::pairNewGateway, modifier = Modifier.weight(1f), icon = Icons.Default.QrCode2)
+          ClawSecondaryButton(text = stringResource(R.string.setup_code_button), onClick = { showSetupCodeHelp = !showSetupCodeHelp }, modifier = Modifier.weight(1f), icon = Icons.Default.Info)
         }
         if (showSetupCodeHelp) {
           Text(
-            text = "Android can scan or paste an existing setup code, but this gateway does not expose setup-code generation to the app yet. Generate the QR/code on the gateway host with openclaw qr, then scan it here or paste the setup code below.",
+            text = stringResource(R.string.setup_code_generation_hint),
             style = ClawTheme.type.caption,
             color = ClawTheme.colors.textMuted,
           )
@@ -892,27 +900,30 @@ private fun GatewaySettingsScreen(
     }
     ClawPanel {
       Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        Text(text = "Connection Setup", style = ClawTheme.type.section, color = ClawTheme.colors.text)
-        ClawTextField(value = setupCode, onValueChange = { setupCode = it }, placeholder = "Setup code")
+        Text(text = stringResource(R.string.connection_setup), style = ClawTheme.type.section, color = ClawTheme.colors.text)
+        ClawTextField(value = setupCode, onValueChange = { setupCode = it }, placeholder = stringResource(R.string.setup_code))
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-          ClawTextField(value = hostInput, onValueChange = { hostInput = it }, placeholder = "Host", modifier = Modifier.weight(1f))
-          ClawTextField(value = portInput, onValueChange = { portInput = it }, placeholder = "Port", modifier = Modifier.weight(0.55f))
+          ClawTextField(value = hostInput, onValueChange = { hostInput = it }, placeholder = stringResource(R.string.host_label), modifier = Modifier.weight(1f))
+          ClawTextField(value = portInput, onValueChange = { portInput = it }, placeholder = stringResource(R.string.port_label), modifier = Modifier.weight(0.55f))
         }
+        val localLabel = stringResource(R.string.local)
+        val tlsLabel = stringResource(R.string.tls)
         ClawSegmentedControl(
-          options = listOf("Local", "TLS"),
-          selected = if (tlsInput) "TLS" else "Local",
-          onSelect = { selected -> tlsInput = selected == "TLS" },
+          options = listOf(localLabel, tlsLabel),
+          selected = if (tlsInput) tlsLabel else localLabel,
+          onSelect = { selected -> tlsInput = selected == tlsLabel },
         )
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-          ClawTextField(value = tokenInput, onValueChange = { tokenInput = it }, placeholder = "Token", modifier = Modifier.weight(1f))
-          ClawTextField(value = bootstrapTokenInput, onValueChange = { bootstrapTokenInput = it }, placeholder = "Bootstrap", modifier = Modifier.weight(1f))
+          ClawTextField(value = tokenInput, onValueChange = { tokenInput = it }, placeholder = stringResource(R.string.token), modifier = Modifier.weight(1f))
+          ClawTextField(value = bootstrapTokenInput, onValueChange = { bootstrapTokenInput = it }, placeholder = stringResource(R.string.bootstrap_token), modifier = Modifier.weight(1f))
         }
-        ClawTextField(value = passwordInput, onValueChange = { passwordInput = it }, placeholder = "Password")
+        ClawTextField(value = passwordInput, onValueChange = { passwordInput = it }, placeholder = stringResource(R.string.password_optional))
         validationText?.let {
           Text(text = it, style = ClawTheme.type.caption, color = ClawTheme.colors.warning)
         }
+        val enterValidSetupCode = stringResource(R.string.enter_valid_setup_code)
         ClawPrimaryButton(
-          text = "Save & Connect",
+          text = stringResource(R.string.save_connect),
           onClick = {
             val setup = setupCode.trim().takeIf { it.isNotEmpty() }?.let(::decodeGatewaySetupCode)
             val endpointConfig =
@@ -922,7 +933,7 @@ private fun GatewaySettingsScreen(
                 composeGatewayManualUrl(hostInput, portInput, tlsInput)?.let { parseGatewayEndpointResult(it).config }
               }
             if (endpointConfig == null) {
-              validationText = "Enter a valid setup code or gateway address."
+              validationText = enterValidSetupCode
               return@ClawPrimaryButton
             }
             val bootstrapToken =
@@ -968,18 +979,18 @@ private fun AppearanceSettingsScreen(
 ) {
   val themeMode by viewModel.appearanceThemeMode.collectAsState()
 
-  SettingsDetailFrame(title = "Appearance", subtitle = "A calm, high-contrast OpenClaw interface.", icon = Icons.Default.Palette, onBack = onBack) {
+  SettingsDetailFrame(title = stringResource(R.string.appearance), subtitle = stringResource(R.string.appearance_subtitle), icon = Icons.Default.Palette, onBack = onBack) {
     SettingsMetricPanel(
       rows =
         listOf(
-          SettingsMetric("Theme", appearanceThemeSummary(themeMode)),
-          SettingsMetric("Contrast", "High"),
-          SettingsMetric("Typography", "Readable"),
+          SettingsMetric(stringResource(R.string.theme), appearanceThemeSummary(themeMode)),
+          SettingsMetric(stringResource(R.string.contrast), stringResource(R.string.high)),
+          SettingsMetric(stringResource(R.string.typography), stringResource(R.string.readable)),
         ),
     )
     ClawPanel {
       Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        Text(text = "Theme", style = ClawTheme.type.section, color = ClawTheme.colors.text)
+        Text(text = stringResource(R.string.theme), style = ClawTheme.type.section, color = ClawTheme.colors.text)
         ClawSegmentedControl(
           options = appearanceThemeOptions(),
           selected = appearanceThemeSummary(themeMode),
@@ -997,20 +1008,21 @@ internal fun appearanceThemeOptions(): List<String> = AppearanceThemeMode.entrie
 internal fun appearanceThemeModeForLabel(label: String): AppearanceThemeMode = AppearanceThemeMode.fromDisplayLabel(label)
 
 /** Converts raw gateway connection text into stable settings metric labels. */
+@Composable
 private fun gatewayStatusLabel(
   statusText: String,
   isConnected: Boolean,
 ): String {
-  if (isConnected) return "Ready"
+  if (isConnected) return stringResource(R.string.status_ready)
   val status = statusText.trim().lowercase()
   return when {
-    status.contains("connecting") || status.contains("reconnecting") -> "Connecting..."
-    status.contains("pair") -> "Pairing needed"
-    status.contains("auth") -> "Authentication needed"
-    status.contains("certificate") || status.contains("tls") -> "Certificate review needed"
-    status.contains("failed") || status.contains("error") || status.contains("offline") || status.contains("not connected") -> "Cannot reach gateway"
-    status.isBlank() -> "Not connected"
-    else -> "Not connected"
+    status.contains("connecting") || status.contains("reconnecting") -> stringResource(R.string.status_connecting_progress)
+    status.contains("pair") -> stringResource(R.string.status_pairing_needed)
+    status.contains("auth") -> stringResource(R.string.status_authentication_needed)
+    status.contains("certificate") || status.contains("tls") -> stringResource(R.string.status_certificate_review_needed)
+    status.contains("failed") || status.contains("error") || status.contains("offline") || status.contains("not connected") -> stringResource(R.string.status_cannot_reach_gateway)
+    status.isBlank() -> stringResource(R.string.status_not_connected)
+    else -> stringResource(R.string.status_not_connected)
   }
 }
 
@@ -1026,25 +1038,25 @@ private fun AboutSettingsScreen(
   val latestVersion = updateAvailable?.latestVersion?.takeIf { it.isNotBlank() }
   val currentGatewayVersion = updateAvailable?.currentVersion?.takeIf { it.isNotBlank() } ?: gatewayVersion
 
-  SettingsDetailFrame(title = "About", subtitle = "OpenClaw for Android.", icon = Icons.Default.Info, onBack = onBack) {
+  SettingsDetailFrame(title = stringResource(R.string.about), subtitle = stringResource(R.string.about_subtitle), icon = Icons.Default.Info, onBack = onBack) {
     SettingsMetricPanel(
       rows =
         listOf(
-          SettingsMetric("Android App", BuildConfig.VERSION_NAME),
-          SettingsMetric("Build", BuildConfig.VERSION_CODE.toString()),
-          SettingsMetric("Channel", androidDistributionChannel()),
-          SettingsMetric("Gateway", currentGatewayVersion ?: "Not connected"),
+          SettingsMetric(stringResource(R.string.android_app), BuildConfig.VERSION_NAME),
+          SettingsMetric(stringResource(R.string.build), BuildConfig.VERSION_CODE.toString()),
+          SettingsMetric(stringResource(R.string.channel), androidDistributionChannel()),
+          SettingsMetric(stringResource(R.string.gateway_label), currentGatewayVersion ?: stringResource(R.string.not_connected)),
         ),
     )
     ClawPanel(contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp)) {
       Column {
-        AboutStatusRow(title = "Gateway", value = serverName?.takeIf { it.isNotBlank() } ?: "Home Gateway", healthy = isConnected)
+        AboutStatusRow(title = stringResource(R.string.gateway_label), value = serverName?.takeIf { it.isNotBlank() } ?: stringResource(R.string.home_gateway), healthy = isConnected)
         HorizontalDivider(color = ClawTheme.colors.border, thickness = 1.dp)
-        AboutStatusRow(title = "Runtime", value = currentGatewayVersion ?: "Waiting", healthy = currentGatewayVersion != null)
+        AboutStatusRow(title = stringResource(R.string.runtime), value = currentGatewayVersion ?: stringResource(R.string.waiting), healthy = currentGatewayVersion != null)
         HorizontalDivider(color = ClawTheme.colors.border, thickness = 1.dp)
         AboutStatusRow(
-          title = "Update",
-          value = latestVersion?.let { "v$it available" } ?: "Up to date",
+          title = stringResource(R.string.update),
+          value = latestVersion?.let { stringResource(R.string.version_available, it) } ?: stringResource(R.string.up_to_date),
           healthy = latestVersion == null,
         )
       }
@@ -1078,16 +1090,17 @@ private fun AboutStatusRow(
       Text(text = title, style = ClawTheme.type.body, color = ClawTheme.colors.text, maxLines = 1)
       Text(text = value, style = ClawTheme.type.caption, color = ClawTheme.colors.textMuted, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
-    ClawStatusPill(text = if (healthy) "OK" else "Check", status = if (healthy) ClawStatus.Success else ClawStatus.Warning)
+    ClawStatusPill(text = if (healthy) stringResource(R.string.ok) else stringResource(R.string.check), status = if (healthy) ClawStatus.Success else ClawStatus.Warning)
   }
 }
 
 /** Chooses about-screen copy based on whether the gateway advertises an update. */
+@Composable
 private fun aboutUpdateText(latestVersion: String?): String =
   if (latestVersion == null) {
-    "OpenClaw turns this phone into a clean mobile command surface for sessions, voice, providers, and Gateway."
+    stringResource(R.string.about_body)
   } else {
-    "A Gateway update is available. Run the update from the Web UI or CLI when you are ready."
+    stringResource(R.string.update_available)
   }
 
 /**
@@ -1110,7 +1123,7 @@ internal fun SettingsDetailFrame(
         Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(9.dp)) {
           ClawPlainIconButton(
             icon = Icons.AutoMirrored.Filled.ArrowBack,
-            contentDescription = "Back",
+            contentDescription = stringResource(R.string.back),
             onClick = onBack,
           )
           Text(text = title, style = ClawTheme.type.title, color = ClawTheme.colors.text, modifier = Modifier.weight(1f), maxLines = 1, overflow = TextOverflow.Ellipsis)
@@ -1175,7 +1188,7 @@ private fun ExecApprovalCard(
             Text(text = preview, style = ClawTheme.type.caption, color = ClawTheme.colors.textMuted, maxLines = 2, overflow = TextOverflow.Ellipsis)
           }
         }
-        ClawStatusPill(text = if (resolving) "Sending" else "Review", status = if (resolving) ClawStatus.Warning else ClawStatus.Success)
+        ClawStatusPill(text = if (resolving) stringResource(R.string.sending) else stringResource(R.string.review), status = if (resolving) ClawStatus.Warning else ClawStatus.Success)
       }
       Text(text = execApprovalMetadata(approval), style = ClawTheme.type.caption, color = ClawTheme.colors.textSubtle, maxLines = 2, overflow = TextOverflow.Ellipsis)
       approval.errorText?.let { errorText ->
@@ -1184,7 +1197,7 @@ private fun ExecApprovalCard(
       Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         if ("allow-once" in approval.allowedDecisions) {
           ClawPrimaryButton(
-            text = if (approval.resolvingDecision == "allow-once") "Allowing" else "Allow Once",
+            text = if (approval.resolvingDecision == "allow-once") stringResource(R.string.allowing) else stringResource(R.string.allow_once),
             onClick = { onResolve(approval.id, "allow-once") },
             enabled = !resolving,
             modifier = Modifier.weight(1f),
@@ -1192,7 +1205,7 @@ private fun ExecApprovalCard(
         }
         if ("allow-always" in approval.allowedDecisions) {
           ClawSecondaryButton(
-            text = if (approval.resolvingDecision == "allow-always") "Saving" else "Always",
+            text = if (approval.resolvingDecision == "allow-always") stringResource(R.string.saving) else stringResource(R.string.always),
             onClick = { onResolve(approval.id, "allow-always") },
             enabled = !resolving,
             modifier = Modifier.weight(1f),
@@ -1200,7 +1213,7 @@ private fun ExecApprovalCard(
         }
         if ("deny" in approval.allowedDecisions) {
           ClawSecondaryButton(
-            text = if (approval.resolvingDecision == "deny") "Denying" else "Deny",
+            text = if (approval.resolvingDecision == "deny") stringResource(R.string.denying) else stringResource(R.string.deny),
             onClick = { onResolve(approval.id, "deny") },
             enabled = !resolving,
             modifier = Modifier.weight(1f),
@@ -1225,7 +1238,7 @@ private fun ApprovalListRow(toolCall: ChatPendingToolCall) {
     title = approvalActionName(toolCall.name),
     subtitle = approvalSubtitle(toolCall, hasIssue),
     leading = { ClawIconBadge(icon = Icons.Default.Lock) },
-    trailing = { ClawStatusPill(text = if (hasIssue) "Issue" else "Review", status = if (hasIssue) ClawStatus.Warning else ClawStatus.Success) },
+    trailing = { ClawStatusPill(text = if (hasIssue) stringResource(R.string.issue) else stringResource(R.string.review), status = if (hasIssue) ClawStatus.Warning else ClawStatus.Success) },
   )
 }
 
@@ -1250,7 +1263,7 @@ private fun UsageProviderListRow(provider: GatewayUsageProviderSummary) {
     title = provider.displayName,
     subtitle = usageProviderSubtitle(provider),
     leading = { ClawTextBadge(text = provider.displayName.firstOrNull()?.uppercase() ?: "U") },
-    trailing = { ClawStatusPill(text = if (hasIssue) "Issue" else "OK", status = if (hasIssue) ClawStatus.Warning else ClawStatus.Success) },
+    trailing = { ClawStatusPill(text = if (hasIssue) stringResource(R.string.issue) else stringResource(R.string.ok), status = if (hasIssue) ClawStatus.Warning else ClawStatus.Success) },
   )
 }
 
@@ -1281,22 +1294,23 @@ private fun AgentListRow(
 ) {
   ClawDetailRow(
     title = agent.name?.takeIf { it.isNotBlank() } ?: agent.id,
-    subtitle = if (isDefault) "Default assistant" else "Ready",
+    subtitle = if (isDefault) stringResource(R.string.default_assistant) else stringResource(R.string.ready),
     leading = { ClawTextBadge(text = agentBadge(agent)) },
-    trailing = { ClawStatusPill(text = if (isDefault) "Default" else "Ready", status = ClawStatus.Success) },
+    trailing = { ClawStatusPill(text = if (isDefault) stringResource(R.string.default_) else stringResource(R.string.ready), status = ClawStatus.Success) },
   )
 }
 
 /**
  * Chooses a display name for the configured default agent, falling back to any available agent.
  */
+@Composable
 private fun defaultAgentName(
   agents: List<GatewayAgentSummary>,
   defaultAgentId: String?,
 ): String {
   val defaultId = defaultAgentId?.trim().orEmpty()
   val agent = agents.firstOrNull { it.id == defaultId } ?: agents.firstOrNull()
-  return agent?.name?.takeIf { it.isNotBlank() } ?: agent?.id ?: "None"
+  return agent?.name?.takeIf { it.isNotBlank() } ?: agent?.id ?: stringResource(R.string.none)
 }
 
 /**
@@ -1320,6 +1334,7 @@ private fun agentBadge(agent: GatewayAgentSummary): String {
 /**
  * Normalizes tool-call names into readable approval action labels.
  */
+@Composable
 private fun approvalActionName(name: String): String {
   val cleaned =
     name
@@ -1331,65 +1346,71 @@ private fun approvalActionName(name: String): String {
     .split(' ')
     .filter { it.isNotBlank() }
     .joinToString(" ") { word -> word.replaceFirstChar { it.uppercaseChar() } }
-    .ifBlank { "Action Request" }
+    .ifBlank { stringResource(R.string.action_request) }
 }
 
 /** Builds approval row age/error copy without exposing raw tool arguments. */
+@Composable
 private fun approvalSubtitle(
   toolCall: ChatPendingToolCall,
   hasIssue: Boolean,
 ): String {
-  if (hasIssue) return "Needs attention"
+  if (hasIssue) return stringResource(R.string.status_needs_attention)
   val ageMs = (System.currentTimeMillis() - toolCall.startedAtMs).coerceAtLeast(0L)
   val minutes = ageMs / 60_000L
-  return if (minutes < 1) "Waiting for review" else "Waiting ${minutes}m"
+  return if (minutes < 1) stringResource(R.string.waiting_for_review) else stringResource(R.string.waiting_minutes, minutes)
 }
 
+@Composable
 private fun execApprovalMetadata(approval: GatewayExecApprovalSummary): String {
   val target =
     when {
-      approval.host == "node" && approval.nodeId != null -> "Node ${approval.nodeId.take(8)}"
+      approval.host == "node" && approval.nodeId != null -> stringResource(R.string.node_id, approval.nodeId.take(8))
       approval.host != null -> approval.host.replaceFirstChar { it.uppercaseChar() }
-      else -> "Gateway"
+      else -> stringResource(R.string.gateway)
     }
-  val agent = approval.agentId?.let { "Agent ${it.take(8)}" }
-  val age = approval.createdAtMs?.let { "Waiting ${formatApprovalDuration(System.currentTimeMillis() - it)}" }
-  val expires = approval.expiresAtMs?.let { "Expires ${formatApprovalDuration(it - System.currentTimeMillis())}" }
+  val agent = approval.agentId?.let { stringResource(R.string.agent_id, it.take(8)) }
+  val age = approval.createdAtMs?.let { stringResource(R.string.waiting_duration, formatApprovalDuration(System.currentTimeMillis() - it)) }
+  val expires = approval.expiresAtMs?.let { stringResource(R.string.expires_duration, formatApprovalDuration(it - System.currentTimeMillis())) }
   return listOfNotNull(target, agent, age, expires).joinToString(" · ")
 }
 
+@Composable
 private fun formatApprovalDuration(deltaMs: Long): String {
   val safeDelta = deltaMs.coerceAtLeast(0L)
   val minutes = safeDelta / 60_000L
   val hours = minutes / 60L
   return when {
-    minutes < 1 -> "soon"
+    minutes < 1 -> stringResource(R.string.soon)
     hours < 1 -> "${minutes}m"
     else -> "${hours}h"
   }
 }
 
 /** Builds the dense cron-job subtitle from schedule, next wake, and prompt preview. */
+@Composable
 private fun cronJobSubtitle(job: GatewayCronJobSummary): String = "${job.scheduleLabel} · ${formatCronWake(job.nextRunAtMs)} · ${job.promptPreview}"
 
 /** Summarizes a provider plan and most-used quota window for usage rows. */
+@Composable
 private fun usageProviderSubtitle(provider: GatewayUsageProviderSummary): String {
   provider.error?.let { return it }
   val window = provider.windows.maxByOrNull { it.usedPercent }
-  val quota = window?.let { "${(100.0 - it.usedPercent).coerceIn(0.0, 100.0).toInt()}% left ${it.label}" }
-  return listOfNotNull(provider.plan, quota).joinToString(" · ").ifBlank { "No limits reported" }
+  val quota = window?.let { stringResource(R.string.percent_left, (100.0 - it.usedPercent).coerceIn(0.0, 100.0).toInt(), it.label) }
+  return listOfNotNull(provider.plan, quota).joinToString(" · ").ifBlank { stringResource(R.string.no_limits_reported) }
 }
 
 /**
  * Converts usage timestamps into short relative labels for metric panels.
  */
+@Composable
 private fun formatUsageUpdated(updatedAtMs: Long?): String {
-  val updated = updatedAtMs ?: return "Never"
+  val updated = updatedAtMs ?: return stringResource(R.string.never)
   val deltaMs = (System.currentTimeMillis() - updated).coerceAtLeast(0L)
   val minutes = deltaMs / 60_000L
   val hours = minutes / 60L
   return when {
-    minutes < 1 -> "Now"
+    minutes < 1 -> stringResource(R.string.now)
     hours < 1 -> "${minutes}m"
     hours < 24 -> "${hours}h"
     else -> "${hours / 24L}d"
@@ -1397,13 +1418,14 @@ private fun formatUsageUpdated(updatedAtMs: Long?): String {
 }
 
 /** Converts gateway cron status text into the short row badge label. */
+@Composable
 private fun cronJobStatusText(job: GatewayCronJobSummary): String {
-  if (!job.enabled) return "Off"
+  if (!job.enabled) return stringResource(R.string.off)
   return when (job.lastRunStatus?.lowercase()) {
-    "error" -> "Issue"
-    "ok" -> "OK"
-    "skipped" -> "Skipped"
-    else -> "Ready"
+    "error" -> stringResource(R.string.issue)
+    "ok" -> stringResource(R.string.ok)
+    "skipped" -> stringResource(R.string.skipped)
+    else -> stringResource(R.string.ready)
   }
 }
 
@@ -1437,6 +1459,7 @@ internal fun filterNotificationAppsForPicker(
 }
 
 /** Summarizes allowlist/blocklist mode with an empty-state warning when needed. */
+@Composable
 private fun notificationPackageSelectionSummary(
   mode: NotificationPackageFilterMode,
   selectedCount: Int,
@@ -1444,15 +1467,15 @@ private fun notificationPackageSelectionSummary(
   when (mode) {
     NotificationPackageFilterMode.Allowlist ->
       if (selectedCount == 0) {
-        "No apps selected. Nothing forwards until you add apps."
+        stringResource(R.string.no_apps_selected_nothing_forwards)
       } else {
-        "$selectedCount ${if (selectedCount == 1) "app" else "apps"} allowed to forward."
+        if (selectedCount == 1) stringResource(R.string.one_app_allowed_to_forward) else stringResource(R.string.apps_allowed_to_forward, selectedCount)
       }
     NotificationPackageFilterMode.Blocklist ->
       if (selectedCount == 0) {
-        "No apps blocked. Apps can forward unless you add blocks."
+        stringResource(R.string.no_apps_blocked)
       } else {
-        "$selectedCount ${if (selectedCount == 1) "app" else "apps"} blocked from forwarding."
+        if (selectedCount == 1) stringResource(R.string.one_app_blocked) else stringResource(R.string.apps_blocked_from_forwarding, selectedCount)
       }
   }
 
@@ -1472,10 +1495,11 @@ private fun notificationAppBadge(label: String): String {
 /**
  * Converts cron wake times into short relative labels for scheduled-work rows.
  */
+@Composable
 private fun formatCronWake(timeMs: Long?): String {
-  val target = timeMs ?: return "None"
+  val target = timeMs ?: return stringResource(R.string.none)
   val deltaMs = target - System.currentTimeMillis()
-  if (deltaMs <= 0) return "Due"
+  if (deltaMs <= 0) return stringResource(R.string.due)
   val minutes = deltaMs / 60_000L
   val hours = minutes / 60L
   val days = hours / 24L
@@ -1483,7 +1507,7 @@ private fun formatCronWake(timeMs: Long?): String {
     days > 0 -> "${days}d"
     hours > 0 -> "${hours}h"
     minutes > 0 -> "${minutes}m"
-    else -> "Soon"
+    else -> stringResource(R.string.soon_label)
   }
 }
 

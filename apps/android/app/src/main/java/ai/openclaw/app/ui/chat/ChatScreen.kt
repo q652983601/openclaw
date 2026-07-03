@@ -3,6 +3,7 @@ package ai.openclaw.app.ui.chat
 import ai.openclaw.app.MainViewModel
 import ai.openclaw.app.R
 import ai.openclaw.app.chat.ChatMessage
+import androidx.compose.ui.res.stringResource
 import ai.openclaw.app.chat.ChatMessageContent
 import ai.openclaw.app.chat.ChatPendingToolCall
 import ai.openclaw.app.chat.ChatSessionEntry
@@ -181,7 +182,7 @@ fun ChatScreen(
     )
 
     errorText?.takeIf { it.isNotBlank() }?.let { error ->
-      ChatNotice(title = "Chat needs attention", body = userFacingChatError(error))
+      ChatNotice(title = stringResource(R.string.chat_needs_attention), body = userFacingChatError(error))
     }
 
     ChatMessageList(
@@ -275,7 +276,7 @@ private fun ChatSessionSwitcher(
           horizontalArrangement = Arrangement.spacedBy(5.dp),
         ) {
           Icon(imageVector = Icons.Default.MoreHoriz, contentDescription = null, modifier = Modifier.size(16.dp))
-          Text(text = "All", style = ClawTheme.type.caption, maxLines = 1)
+          Text(text = stringResource(R.string.all_sessions), style = ClawTheme.type.caption, maxLines = 1)
         }
       }
     }
@@ -336,9 +337,9 @@ private fun ChatHeader(
       ModelPill(
         text =
           when {
-            pendingRunCount > 0 -> "Working"
-            healthOk -> "Ready"
-            else -> "Offline"
+            pendingRunCount > 0 -> stringResource(R.string.status_working)
+            healthOk -> stringResource(R.string.status_ready)
+            else -> stringResource(R.string.status_offline_short)
           },
         status =
           when {
@@ -347,10 +348,10 @@ private fun ChatHeader(
             else -> ClawStatus.Danger
           },
       )
-      HeaderIcon(icon = Icons.Default.Refresh, contentDescription = "Refresh chat", onClick = onMore)
+      HeaderIcon(icon = Icons.Default.Refresh, contentDescription = stringResource(R.string.refresh_chat_cd), onClick = onMore)
     }
     Column(verticalArrangement = Arrangement.spacedBy(3.dp)) {
-      Text(text = "Chat", style = ClawTheme.type.display.copy(fontSize = 24.sp, lineHeight = 28.sp), color = ClawTheme.colors.text, maxLines = 1)
+      Text(text = stringResource(R.string.chat_title), style = ClawTheme.type.display.copy(fontSize = 24.sp, lineHeight = 28.sp), color = ClawTheme.colors.text, maxLines = 1)
       Text(
         text = sessionTitle,
         style = ClawTheme.type.caption.copy(fontSize = 13.sp, lineHeight = 17.sp),
@@ -473,7 +474,7 @@ private fun ChatMessageList(
 
     if (timeline.items.isEmpty()) {
       if (historyLoading) {
-        ClawLoadingState(title = "Loading session", modifier = Modifier.align(Alignment.Center))
+        ClawLoadingState(title = stringResource(R.string.loading_session), modifier = Modifier.align(Alignment.Center))
       } else {
         EmptyChatHint(healthOk = healthOk, onStarterPrompt = onStarterPrompt, modifier = Modifier.align(Alignment.Center))
       }
@@ -493,13 +494,13 @@ private fun EmptyChatHint(
     verticalArrangement = Arrangement.spacedBy(12.dp),
   ) {
     Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(5.dp)) {
-      Text(text = if (healthOk) "Ready when you are" else "Gateway offline", style = ClawTheme.type.title.copy(fontSize = 18.sp, lineHeight = 23.sp), color = ClawTheme.colors.text)
+      Text(text = if (healthOk) stringResource(R.string.ready_when_you_are) else stringResource(R.string.gateway_offline), style = ClawTheme.type.title.copy(fontSize = 18.sp, lineHeight = 23.sp), color = ClawTheme.colors.text)
       Text(
         text =
           if (healthOk) {
-            "Start with a prompt, or use voice."
+            stringResource(R.string.start_with_prompt_or_voice)
           } else {
-            "Reconnect from Settings to send messages."
+            stringResource(R.string.reconnect_from_settings)
           },
         style = ClawTheme.type.body,
         color = ClawTheme.colors.textMuted,
@@ -516,9 +517,9 @@ private fun EmptyChatHint(
 private fun StarterPromptList(onStarterPrompt: (String) -> Unit) {
   ClawPanel(contentPadding = PaddingValues(horizontal = 0.dp, vertical = 0.dp)) {
     Column {
-      starterPrompts.forEachIndexed { index, prompt ->
+      starterPrompts().forEachIndexed { index, prompt ->
         StarterPromptRow(prompt = prompt, onClick = { onStarterPrompt(prompt.message) })
-        if (index != starterPrompts.lastIndex) {
+        if (index != starterPrompts().lastIndex) {
           HorizontalDivider(color = ClawTheme.colors.border, thickness = 1.dp)
         }
       }
@@ -562,11 +563,12 @@ private data class StarterPrompt(
 )
 
 /** Default prompts shown only for an empty, connected session. */
-private val starterPrompts =
+@Composable
+private fun starterPrompts(): List<StarterPrompt> =
   listOf(
-    StarterPrompt(mark = "1", title = "Catch me up", subtitle = "Summarize recent sessions and next steps.", message = "Catch me up on my recent OpenClaw sessions and suggest next steps."),
-    StarterPrompt(mark = "2", title = "Plan the work", subtitle = "Turn a goal into an actionable checklist.", message = "Help me turn this goal into a practical checklist: "),
-    StarterPrompt(mark = "3", title = "Use this phone", subtitle = "Ask OpenClaw to use Android capabilities.", message = "What can you help me do from this phone right now?"),
+    StarterPrompt(mark = "1", title = stringResource(R.string.starter_prompt_1_title), subtitle = stringResource(R.string.starter_prompt_1_subtitle), message = stringResource(R.string.starter_prompt_1_message)),
+    StarterPrompt(mark = "2", title = stringResource(R.string.starter_prompt_2_title), subtitle = stringResource(R.string.starter_prompt_2_subtitle), message = stringResource(R.string.starter_prompt_2_message)),
+    StarterPrompt(mark = "3", title = stringResource(R.string.starter_prompt_3_title), subtitle = stringResource(R.string.starter_prompt_3_subtitle), message = stringResource(R.string.starter_prompt_3_message)),
   )
 
 @Composable
@@ -606,8 +608,8 @@ private fun ChatBubble(
           text =
             when {
               live -> "OpenClaw · Live"
-              isUser -> "You"
-              normalizedRole == "system" -> "System"
+              isUser -> stringResource(R.string.role_you)
+              normalizedRole == "system" -> stringResource(R.string.role_system_short)
               else -> "OpenClaw"
             },
           style = ClawTheme.type.caption.copy(fontSize = 12.5.sp, lineHeight = 16.sp, fontWeight = FontWeight.SemiBold),
@@ -617,7 +619,7 @@ private fun ChatBubble(
           if (part.type == "text") {
             ChatText(text = part.text.orEmpty(), textColor = ClawTheme.colors.text)
           } else {
-            Text(text = part.fileName ?: "Attachment", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+            Text(text = part.fileName ?: stringResource(R.string.attachment_fallback), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
           }
         }
         timestampMs?.let {
@@ -653,12 +655,12 @@ private fun ChatText(
 private fun ToolBubble(toolCalls: List<ChatPendingToolCall>) {
   ClawPanel {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-      ClawStatusPill(text = "Tools running", status = ClawStatus.Warning)
+      ClawStatusPill(text = stringResource(R.string.tools_running), status = ClawStatus.Warning)
       toolCalls.take(4).forEach { tool ->
-        ClawListItem(title = tool.name, subtitle = "OpenClaw is working")
+        ClawListItem(title = tool.name, subtitle = stringResource(R.string.openclaw_is_working))
       }
       if (toolCalls.size > 4) {
-        Text(text = "+${toolCalls.size - 4} more", style = ClawTheme.type.caption, color = ClawTheme.colors.textSubtle)
+        Text(text = stringResource(R.string.tools_more_short_format, toolCalls.size - 4), style = ClawTheme.type.caption, color = ClawTheme.colors.textSubtle)
       }
     }
   }
@@ -668,8 +670,8 @@ private fun ToolBubble(toolCalls: List<ChatPendingToolCall>) {
 private fun ChatThinkingBubble() {
   ClawPanel {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-      ClawStatusPill(text = "Thinking", status = ClawStatus.Warning)
-      Text(text = "OpenClaw is preparing a response.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+      ClawStatusPill(text = stringResource(R.string.thinking), status = ClawStatus.Warning)
+      Text(text = stringResource(R.string.openclaw_preparing_response), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
     }
   }
 }
@@ -750,7 +752,7 @@ private fun ChatComposer(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
           ) {
             Box(modifier = Modifier.size(8.dp).background(ClawTheme.colors.danger, RoundedCornerShape(2.dp)))
-            Text(text = "Stop", style = ClawTheme.type.label)
+            Text(text = stringResource(R.string.stop), style = ClawTheme.type.label)
           }
         }
       }
@@ -832,7 +834,7 @@ private fun ChatInputPill(
     ) {
       Surface(onClick = onPickImages, modifier = Modifier.size(ClawTheme.spacing.touchTarget), shape = CircleShape, color = ClawTheme.colors.surfaceRaised, contentColor = ClawTheme.colors.text) {
         Box(contentAlignment = Alignment.Center) {
-          Icon(imageVector = Icons.Default.AttachFile, contentDescription = "Attach image", modifier = Modifier.size(16.dp))
+          Icon(imageVector = Icons.Default.AttachFile, contentDescription = stringResource(R.string.attach_image_cd), modifier = Modifier.size(16.dp))
         }
       }
       Box(modifier = Modifier.weight(1f)) {
@@ -847,7 +849,7 @@ private fun ChatInputPill(
           decorationBox = { innerTextField ->
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterStart) {
               if (value.isEmpty()) {
-                Text(text = "Message OpenClaw", style = ClawTheme.type.body, color = ClawTheme.colors.textSubtle)
+                Text(text = stringResource(R.string.message_openclaw_hint), style = ClawTheme.type.body, color = ClawTheme.colors.textSubtle)
               }
               innerTextField()
             }
@@ -862,7 +864,7 @@ private fun ChatInputPill(
         contentColor = ClawTheme.colors.text,
       ) {
         Box(contentAlignment = Alignment.Center) {
-          Icon(imageVector = Icons.Default.Mic, contentDescription = "Voice", modifier = Modifier.size(18.dp))
+          Icon(imageVector = Icons.Default.Mic, contentDescription = stringResource(R.string.voice_cd), modifier = Modifier.size(18.dp))
         }
       }
     }
@@ -900,29 +902,31 @@ private fun AttachmentChip(
       Text(text = fileName, style = ClawTheme.type.caption, color = ClawTheme.colors.textMuted, maxLines = 1, overflow = TextOverflow.Ellipsis)
       Surface(onClick = onRemove, modifier = Modifier.size(22.dp), shape = CircleShape, color = ClawTheme.colors.canvas, contentColor = ClawTheme.colors.text) {
         Box(contentAlignment = Alignment.Center) {
-          Icon(imageVector = Icons.Default.Close, contentDescription = "Remove attachment", modifier = Modifier.size(13.dp))
+          Icon(imageVector = Icons.Default.Close, contentDescription = stringResource(R.string.remove_attachment_cd), modifier = Modifier.size(13.dp))
         }
       }
     }
   }
 }
 
+@Composable
 private fun currentSessionTitle(
   sessionKey: String,
   sessions: List<ChatSessionEntry>,
 ): String {
   val entry = sessions.firstOrNull { it.key == sessionKey }
-  val name = entry?.displayName?.takeIf { it.isNotBlank() } ?: return "New chat"
+  val name = entry?.displayName?.takeIf { it.isNotBlank() } ?: return stringResource(R.string.new_chat)
   return friendlySessionName(name)
 }
 
+@Composable
 private fun chatSessionChipText(
   entry: ChatSessionEntry,
   mainSessionKey: String,
 ): String {
   val mainKey = mainSessionKey.trim().ifEmpty { "main" }
-  if (entry.key == mainKey || (entry.key == "main" && mainKey == "main")) return "Main"
-  val name = entry.displayName?.takeIf { it.isNotBlank() } ?: entry.key.takeIf { entry.updatedAtMs != null } ?: "Current"
+  if (entry.key == mainKey || (entry.key == "main" && mainKey == "main")) return stringResource(R.string.main_session_label)
+  val name = entry.displayName?.takeIf { it.isNotBlank() } ?: entry.key.takeIf { entry.updatedAtMs != null } ?: return stringResource(R.string.current_session_label)
   return friendlySessionName(name)
 }
 
@@ -977,16 +981,17 @@ private fun SendButton(
     border = BorderStroke(1.dp, if (enabled) ClawTheme.colors.primary else ClawTheme.colors.border),
   ) {
     Box(contentAlignment = Alignment.Center) {
-      Icon(imageVector = Icons.AutoMirrored.Filled.Send, contentDescription = "Send", modifier = Modifier.size(18.dp))
+      Icon(imageVector = Icons.AutoMirrored.Filled.Send, contentDescription = stringResource(R.string.send_cd), modifier = Modifier.size(18.dp))
     }
   }
 }
 
+@Composable
 private fun userFacingChatError(error: String): String {
   val lower = error.lowercase(Locale.US)
   return when {
-    lower.contains("not connected") -> "Gateway is offline. Open Settings to reconnect."
-    lower.contains("unauthorized") || lower.contains("auth") -> "Gateway authentication needs attention."
+    lower.contains("not connected") -> stringResource(R.string.error_not_connected)
+    lower.contains("unauthorized") || lower.contains("auth") -> stringResource(R.string.error_unauthorized)
     else -> error
   }
 }

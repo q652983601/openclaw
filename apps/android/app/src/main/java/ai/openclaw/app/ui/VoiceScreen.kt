@@ -71,6 +71,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -184,7 +185,7 @@ fun VoiceScreen(
     verticalArrangement = Arrangement.spacedBy(9.dp),
   ) {
     VoiceHeader(
-      statusText = voiceAttentionStatus ?: if (voiceActive || !gatewayReady) activeStatus else "Your voice command center.",
+      statusText = voiceAttentionStatus ?: if (voiceActive || !gatewayReady) activeStatus else stringResource(R.string.voice_command_center),
       speakerEnabled = speakerEnabled,
       onToggleSpeaker = { viewModel.setSpeakerEnabled(!speakerEnabled) },
       onOpenCommand = onOpenCommand,
@@ -270,12 +271,12 @@ private fun DictationScreen(
     verticalArrangement = Arrangement.spacedBy(10.dp),
   ) {
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(9.dp)) {
-      ClawPlainIconButton(icon = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back to voice", onClick = onCancel)
+      ClawPlainIconButton(icon = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back_to_voice), onClick = onCancel)
       Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Text(text = "Dictation", style = ClawTheme.type.title.copy(fontSize = 16.sp, lineHeight = 20.sp), color = ClawTheme.colors.text)
-        Text(text = "Transcribe then send", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+        Text(text = stringResource(R.string.dictation), style = ClawTheme.type.title.copy(fontSize = 16.sp, lineHeight = 20.sp), color = ClawTheme.colors.text)
+        Text(text = stringResource(R.string.transcribe_then_send), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
       }
-      ClawPlainIconButton(icon = Icons.Default.Settings, contentDescription = "Dictation settings", onClick = onOpenVoiceSettings)
+      ClawPlainIconButton(icon = Icons.Default.Settings, contentDescription = stringResource(R.string.dictation_settings), onClick = onOpenVoiceSettings)
     }
 
     Surface(
@@ -286,7 +287,7 @@ private fun DictationScreen(
     ) {
       Column(modifier = Modifier.fillMaxSize().padding(horizontal = 12.dp, vertical = 12.dp), verticalArrangement = Arrangement.SpaceBetween) {
         Text(
-          text = draftText.ifBlank { if (sending) "Sending to chat..." else "Start speaking..." },
+          text = draftText.ifBlank { if (sending) stringResource(R.string.sending_to_chat) else stringResource(R.string.start_speaking) },
           style = ClawTheme.type.title.copy(fontSize = 15.sp, lineHeight = 19.sp),
           color = if (draftText.isBlank()) ClawTheme.colors.textSubtle else ClawTheme.colors.text,
           maxLines = 7,
@@ -315,7 +316,7 @@ private fun DictationScreen(
           }
         }
         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-          Text(text = "Speech provider", style = ClawTheme.type.section, color = ClawTheme.colors.text)
+          Text(text = stringResource(R.string.speech_provider), style = ClawTheme.type.section, color = ClawTheme.colors.text)
           Text(
             text = providerAttentionStatus ?: gatewayStatus.voiceGatewayLabel(),
             style = ClawTheme.type.body,
@@ -328,10 +329,10 @@ private fun DictationScreen(
           Text(
             text =
               when {
-                sending -> "Sending"
-                providerAttentionStatus != null -> "Attention"
-                speechProviderReady -> "Ready"
-                else -> "Offline"
+                sending -> stringResource(R.string.status_sending)
+                providerAttentionStatus != null -> stringResource(R.string.attention)
+                speechProviderReady -> stringResource(R.string.status_ready_short)
+                else -> stringResource(R.string.status_offline_short)
               },
             style = ClawTheme.type.caption.copy(fontSize = 12.5.sp, lineHeight = 16.sp),
             color =
@@ -362,12 +363,12 @@ private fun DictationScreen(
 
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
       Icon(imageVector = Icons.Default.Info, contentDescription = null, modifier = Modifier.size(16.dp), tint = ClawTheme.colors.textMuted)
-      Text(text = "Tip: stop listening to send the captured turn.", style = ClawTheme.type.caption, color = ClawTheme.colors.textMuted)
+      Text(text = stringResource(R.string.dictation_tip), style = ClawTheme.type.caption, color = ClawTheme.colors.textMuted)
     }
 
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-      ClawSecondaryButton(text = "Cancel", icon = Icons.Default.Close, onClick = onCancel, modifier = Modifier.weight(0.95f))
-      ClawPrimaryButton(text = if (sending) "Sending" else "Send to Chat", icon = Icons.AutoMirrored.Filled.Send, onClick = onSend, enabled = !sending, modifier = Modifier.weight(1.25f))
+      ClawSecondaryButton(text = stringResource(R.string.cancel), icon = Icons.Default.Close, onClick = onCancel, modifier = Modifier.weight(0.95f))
+      ClawPrimaryButton(text = if (sending) stringResource(R.string.status_sending) else stringResource(R.string.send_to_chat), icon = Icons.AutoMirrored.Filled.Send, onClick = onSend, enabled = !sending, modifier = Modifier.weight(1.25f))
     }
   }
 }
@@ -407,26 +408,26 @@ private fun TalkSessionScreen(
     verticalArrangement = Arrangement.spacedBy(10.dp),
   ) {
     Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-      ClawPlainIconButton(icon = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back to voice", onClick = onEndTalk)
+      ClawPlainIconButton(icon = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back_to_voice), onClick = onEndTalk)
       Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(3.dp)) {
-        Text(text = "Realtime Talk", style = ClawTheme.type.title.copy(fontSize = 16.sp, lineHeight = 20.sp), color = ClawTheme.colors.text)
+        Text(text = stringResource(R.string.realtime_talk), style = ClawTheme.type.title.copy(fontSize = 16.sp, lineHeight = 20.sp), color = ClawTheme.colors.text)
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(5.dp)) {
           Box(modifier = Modifier.size(4.5.dp).clip(CircleShape).background(if (speaking || listening) ClawTheme.colors.success else ClawTheme.colors.textSubtle))
           Text(
             text =
               if (speaking) {
-                "OpenClaw speaking"
+                stringResource(R.string.openclaw_speaking)
               } else if (listening) {
-                "Realtime voice"
+                stringResource(R.string.realtime_voice)
               } else {
-                "Connected"
+                stringResource(R.string.status_connected)
               },
             style = ClawTheme.type.body,
             color = ClawTheme.colors.textMuted,
           )
         }
       }
-      ClawPlainIconButton(icon = Icons.Default.Info, contentDescription = "Talk settings", onClick = onOpenVoiceSettings)
+      ClawPlainIconButton(icon = Icons.Default.Info, contentDescription = stringResource(R.string.talk_settings), onClick = onOpenVoiceSettings)
     }
 
     Surface(
@@ -441,7 +442,7 @@ private fun TalkSessionScreen(
     }
 
     Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-      Text(text = "Live transcript", style = ClawTheme.type.caption, color = ClawTheme.colors.textMuted)
+      Text(text = stringResource(R.string.live_transcript), style = ClawTheme.type.caption, color = ClawTheme.colors.textMuted)
       TalkTranscript(entries = entries, modifier = Modifier.weight(1f))
     }
 
@@ -450,9 +451,9 @@ private fun TalkSessionScreen(
       horizontalArrangement = Arrangement.SpaceEvenly,
       verticalAlignment = Alignment.CenterVertically,
     ) {
-      TalkControl(icon = if (speakerEnabled) Icons.AutoMirrored.Filled.VolumeUp else Icons.AutoMirrored.Filled.VolumeOff, label = if (speakerEnabled) "Mute" else "Unmute", onClick = onToggleSpeaker)
-      TalkControl(icon = Icons.Default.PhoneDisabled, label = "End", primary = true, onClick = onEndTalk)
-      TalkControl(icon = Icons.Default.GraphicEq, label = "Voice", onClick = onOpenVoiceSettings)
+      TalkControl(icon = if (speakerEnabled) Icons.AutoMirrored.Filled.VolumeUp else Icons.AutoMirrored.Filled.VolumeOff, label = if (speakerEnabled) stringResource(R.string.mute) else stringResource(R.string.unmute), onClick = onToggleSpeaker)
+      TalkControl(icon = Icons.Default.PhoneDisabled, label = stringResource(R.string.end), primary = true, onClick = onEndTalk)
+      TalkControl(icon = Icons.Default.GraphicEq, label = stringResource(R.string.voice_title), onClick = onOpenVoiceSettings)
     }
   }
 }
@@ -465,13 +466,13 @@ private fun TalkTranscript(
   LazyColumn(modifier = modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
     if (entries.isEmpty()) {
       item {
-        TalkTranscriptCard(label = "OpenClaw", text = "Listening for your next turn.", muted = true)
+        TalkTranscriptCard(label = stringResource(R.string.openclaw_brand), text = stringResource(R.string.listening_for_next_turn), muted = true)
       }
     } else {
       items(entries.takeLast(6), key = { it.id }) { entry ->
         TalkTranscriptCard(
-          label = if (entry.role == VoiceConversationRole.User) "You" else "OpenClaw",
-          text = if (entry.isStreaming && entry.text.isBlank()) "Listening response..." else entry.text,
+          label = if (entry.role == VoiceConversationRole.User) stringResource(R.string.you) else stringResource(R.string.openclaw_brand),
+          text = if (entry.isStreaming && entry.text.isBlank()) stringResource(R.string.listening_response) else entry.text,
           muted = entry.isStreaming,
         )
       }
@@ -557,12 +558,12 @@ private fun VoiceHeader(
         tint = ClawTheme.colors.text,
       )
       Text(
-        text = "OpenClaw",
+        text = stringResource(R.string.openclaw_brand),
         style = ClawTheme.type.title.copy(fontSize = 17.sp, lineHeight = 21.sp),
         color = ClawTheme.colors.text,
         modifier = Modifier.weight(1f),
       )
-      ClawPlainIconButton(icon = Icons.Default.Search, contentDescription = "Search voice", onClick = onOpenCommand)
+      ClawPlainIconButton(icon = Icons.Default.Search, contentDescription = stringResource(R.string.search_voice), onClick = onOpenCommand)
     }
     Row(
       modifier = Modifier.fillMaxWidth(),
@@ -570,7 +571,7 @@ private fun VoiceHeader(
       horizontalArrangement = Arrangement.spacedBy(12.dp),
     ) {
       Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
-        Text(text = "Voice", style = ClawTheme.type.display.copy(fontSize = 24.sp, lineHeight = 28.sp), color = ClawTheme.colors.text)
+        Text(text = stringResource(R.string.voice_title), style = ClawTheme.type.display.copy(fontSize = 24.sp, lineHeight = 28.sp), color = ClawTheme.colors.text)
         Text(
           text = statusText,
           style = ClawTheme.type.body,
@@ -581,7 +582,7 @@ private fun VoiceHeader(
       }
       ClawPlainIconButton(
         icon = if (speakerEnabled) Icons.AutoMirrored.Filled.VolumeUp else Icons.AutoMirrored.Filled.VolumeOff,
-        contentDescription = if (speakerEnabled) "Mute speaker" else "Unmute speaker",
+        contentDescription = if (speakerEnabled) stringResource(R.string.mute_speaker) else stringResource(R.string.unmute_speaker),
         onClick = onToggleSpeaker,
       )
     }
@@ -622,12 +623,12 @@ private fun VoiceHero(
         text =
           when {
             voiceAttentionStatus != null -> voiceAttentionStatus
-            talkModeSpeaking -> "OpenClaw is replying"
-            talkModeListening -> "Listening"
-            talkModeEnabled -> "Talk is live"
-            micEnabled -> "Dictation is listening"
-            !gatewayReady -> "Gateway offline"
-            else -> "Ready to talk"
+            talkModeSpeaking -> stringResource(R.string.openclaw_is_replying)
+            talkModeListening -> stringResource(R.string.status_listening)
+            talkModeEnabled -> stringResource(R.string.talk_is_live)
+            micEnabled -> stringResource(R.string.dictation_is_listening)
+            !gatewayReady -> stringResource(R.string.gateway_offline)
+            else -> stringResource(R.string.ready_to_talk)
           },
         style = ClawTheme.type.body,
         color = ClawTheme.colors.textMuted,
@@ -653,24 +654,24 @@ private fun VoiceHero(
 
     ClawPanel(contentPadding = PaddingValues(horizontal = 14.dp, vertical = 4.dp)) {
       VoiceModeRow(
-        title = if (talkModeEnabled) "End Talk" else "Realtime Talk",
+        title = if (talkModeEnabled) stringResource(R.string.end_talk) else stringResource(R.string.realtime_talk),
         subtitle =
           when {
-            talkModeEnabled -> "Conversation is live"
-            gatewayReady -> "Natural conversation in real time"
-            else -> "Connect gateway to start"
+            talkModeEnabled -> stringResource(R.string.conversation_is_live)
+            gatewayReady -> stringResource(R.string.natural_conversation_realtime)
+            else -> stringResource(R.string.connect_gateway_to_start)
           },
         icon = if (talkModeEnabled) Icons.Default.PhoneDisabled else Icons.Default.RecordVoiceOver,
         onClick = onStartTalk,
         enabled = gatewayReady || talkModeEnabled,
       )
       VoiceModeRow(
-        title = if (micEnabled) "Stop Dictation" else "Dictation",
+        title = if (micEnabled) stringResource(R.string.stop_dictation) else stringResource(R.string.dictation),
         subtitle =
           when {
-            micEnabled -> "Listening for one turn"
-            gatewayReady -> "Convert speech to text"
-            else -> "Connect gateway to start"
+            micEnabled -> stringResource(R.string.listening_for_one_turn)
+            gatewayReady -> stringResource(R.string.convert_speech_to_text)
+            else -> stringResource(R.string.connect_gateway_to_start)
           },
         icon = if (micEnabled) Icons.Default.MicOff else Icons.Default.TextFields,
         onClick = onStartDictation,
@@ -683,9 +684,9 @@ private fun VoiceHero(
     VoicePrimaryAction(
       text =
         when {
-          talkModeEnabled -> "End Talk"
-          gatewayReady -> "Start Talk"
-          else -> "Connect Gateway"
+          talkModeEnabled -> stringResource(R.string.end_talk)
+          gatewayReady -> stringResource(R.string.start_talk)
+          else -> stringResource(R.string.connect_gateway)
         },
       icon =
         when {
@@ -769,7 +770,7 @@ private fun VoiceProviderCard(
         }
       }
       Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        Text(text = "Provider", style = ClawTheme.type.body, color = ClawTheme.colors.text, maxLines = 1)
+        Text(text = stringResource(R.string.provider), style = ClawTheme.type.body, color = ClawTheme.colors.text, maxLines = 1)
         Text(
           text = voiceAttentionStatus ?: gatewayStatus.voiceGatewayLabel(),
           style = ClawTheme.type.caption,
@@ -795,9 +796,9 @@ private fun VoiceProviderCard(
         Text(
           text =
             when {
-              ready -> "Ready"
-              voiceAttentionStatus != null -> "Attention"
-              else -> "Offline"
+              ready -> stringResource(R.string.status_ready_short)
+              voiceAttentionStatus != null -> stringResource(R.string.attention)
+              else -> stringResource(R.string.status_offline_short)
             },
           style = ClawTheme.type.caption,
           color = ClawTheme.colors.textMuted,
@@ -913,12 +914,12 @@ private fun VoiceTranscript(
     if (entries.isEmpty() && !showThinking) {
       item {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-          Text(text = "Live transcript", style = ClawTheme.type.caption, color = ClawTheme.colors.textSubtle)
+          Text(text = stringResource(R.string.live_transcript), style = ClawTheme.type.caption, color = ClawTheme.colors.textSubtle)
           ClawPanel(contentPadding = PaddingValues(horizontal = 14.dp, vertical = 9.dp)) {
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-              Text(text = "No transcript yet", style = ClawTheme.type.section, color = ClawTheme.colors.text)
+              Text(text = stringResource(R.string.no_transcript_yet), style = ClawTheme.type.section, color = ClawTheme.colors.text)
               Text(
-                text = "Your words and OpenClaw replies will appear here.",
+                text = stringResource(R.string.words_and_replies_appear),
                 style = ClawTheme.type.body,
                 color = ClawTheme.colors.textMuted,
               )
@@ -943,12 +944,12 @@ private fun VoiceTurnCard(entry: VoiceConversationEntry) {
     ) {
       Column(modifier = Modifier.padding(horizontal = 14.dp, vertical = 9.dp), verticalArrangement = Arrangement.spacedBy(5.dp)) {
         Text(
-          text = if (isUser) "You" else "OpenClaw",
+          text = if (isUser) stringResource(R.string.you) else stringResource(R.string.openclaw_brand),
           style = ClawTheme.type.caption.copy(fontSize = 12.5.sp, lineHeight = 16.sp, fontWeight = FontWeight.SemiBold),
           color = ClawTheme.colors.textSubtle,
         )
         Text(
-          text = if (entry.isStreaming && entry.text.isBlank()) "Listening..." else entry.text,
+          text = if (entry.isStreaming && entry.text.isBlank()) stringResource(R.string.listening_dots) else entry.text,
           style = ClawTheme.type.body,
           color = ClawTheme.colors.text,
         )
@@ -961,8 +962,8 @@ private fun VoiceTurnCard(entry: VoiceConversationEntry) {
 private fun VoiceThinkingCard() {
   ClawPanel {
     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-      ClawStatusPill(text = "Sending", status = ClawStatus.Warning)
-      Text(text = "OpenClaw is preparing a response.", style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
+      ClawStatusPill(text = stringResource(R.string.status_sending), status = ClawStatus.Warning)
+      Text(text = stringResource(R.string.openclaw_preparing_response), style = ClawTheme.type.body, color = ClawTheme.colors.textMuted)
     }
   }
 }
@@ -971,14 +972,14 @@ private fun VoiceThinkingCard() {
 private fun VoicePermissionPanel(onRequestPermission: () -> Unit) {
   ClawPanel {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-      ClawStatusPill(text = "Permission needed", status = ClawStatus.Warning)
-      Text(text = "Microphone access is needed.", style = ClawTheme.type.section, color = ClawTheme.colors.text)
+      ClawStatusPill(text = stringResource(R.string.permission_needed), status = ClawStatus.Warning)
+      Text(text = stringResource(R.string.microphone_access_needed), style = ClawTheme.type.section, color = ClawTheme.colors.text)
       Text(
-        text = "OpenClaw only listens when you start Talk or Dictation.",
+        text = stringResource(R.string.openclaw_listens_only_when_started),
         style = ClawTheme.type.body,
         color = ClawTheme.colors.textMuted,
       )
-      ClawSecondaryButton(text = "Enable Microphone", icon = Icons.Default.Mic, onClick = onRequestPermission)
+      ClawSecondaryButton(text = stringResource(R.string.enable_microphone), icon = Icons.Default.Mic, onClick = onRequestPermission)
     }
   }
 }
@@ -1016,7 +1017,7 @@ internal fun voiceStatusLabel(
     voiceCaptureMode == VoiceCaptureMode.TalkMode && talkModeSpeaking -> "OpenClaw is speaking"
     voiceCaptureMode == VoiceCaptureMode.TalkMode && talkModeListening -> "Listening"
     voiceCaptureMode == VoiceCaptureMode.TalkMode -> "Talk is live"
-    micIsSending -> "Sending dictation"
+    micIsSending -> "Sending dictation..."
     voiceCaptureMode == VoiceCaptureMode.ManualMic -> micStatusText.ifBlank { "Listening" }
     micQueuedMessages > 0 -> "$micQueuedMessages queued"
     !gatewayStatus.isVoiceGatewayReady() -> "Gateway offline"
@@ -1045,7 +1046,7 @@ internal fun voiceAttentionStatus(
         lower.contains("permission required") ||
         lower.contains("not connected") ||
         lower.contains("error")
-    }?.let(::userFacingVoiceAttentionStatus)
+    }?.let { userFacingVoiceAttentionStatus(it) }
 }
 
 internal fun voiceRuntimeAttentionStatus(statusText: String): String? {
@@ -1059,7 +1060,7 @@ internal fun voiceRuntimeAttentionStatus(statusText: String): String? {
         (lower.contains("provider") && lower.contains("not configured")) ||
         lower.contains("no realtime transcription provider") ||
         lower.contains("failed")
-    }?.let(::userFacingVoiceAttentionStatus)
+    }?.let { userFacingVoiceAttentionStatus(it) }
 }
 
 private fun userFacingVoiceAttentionStatus(status: String): String {
@@ -1081,7 +1082,7 @@ private fun userFacingVoiceAttentionStatus(status: String): String {
     return "Realtime transcription provider is not configured."
   }
   if (lower.contains("microphone permission required")) {
-    return "Microphone permission is required."
+    return "Microphone permission required"
   }
   return if (normalized.length <= 90) normalized else "${normalized.take(87)}..."
 }
@@ -1091,6 +1092,8 @@ private fun String.isVoiceGatewayReady(): Boolean {
   return !status.contains("offline") && !status.contains("not connected") && !status.contains("failed") && !status.contains("error")
 }
 
-private fun String.voiceGatewayLabel(): String = if (isVoiceGatewayReady()) "Connected and ready" else "Gateway not connected"
+@Composable
+private fun String.voiceGatewayLabel(): String =
+  if (isVoiceGatewayReady()) stringResource(R.string.connected_and_ready) else stringResource(R.string.gateway_not_connected)
 
 private fun Context.hasRecordAudioPermission(): Boolean = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED

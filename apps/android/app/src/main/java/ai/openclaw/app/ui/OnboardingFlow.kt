@@ -216,7 +216,7 @@ fun OnboardingFlow(
         title = { Text(stringResource(R.string.trust_this_gateway), style = ClawTheme.type.section, color = ClawTheme.colors.text) },
         text = {
           Text(
-            "Verify the certificate fingerprint before continuing.\n\n${prompt.fingerprintSha256}",
+            stringResource(R.string.trust_verification_format, prompt.fingerprintSha256),
             style = ClawTheme.type.body,
             color = ClawTheme.colors.textMuted,
           )
@@ -265,13 +265,14 @@ fun OnboardingFlow(
                 if (scanned.setupCode == null) {
                   setupError =
                     gatewayEndpointValidationMessage(
+                      context,
                       scanned.error ?: GatewayEndpointValidationError.INVALID_URL,
                       GatewayEndpointInputSource.QR_SCAN,
                     )
                   return@addOnSuccessListener
                 }
                 setupCode = scanned.setupCode
-              }.addOnFailureListener { setupError = "Could not open the scanner." }
+              }.addOnFailureListener { setupError = context.getString(R.string.scanner_open_failed) }
           },
           onSetupCodeChange = {
             setupCode = it
@@ -307,7 +308,7 @@ fun OnboardingFlow(
                 password = password,
               )
             if (config == null) {
-              setupError = "Enter a setup code or a valid gateway URL."
+              setupError = context.getString(R.string.enter_setup_code_or_url)
               return@GatewaySetupScreen
             }
 
@@ -410,12 +411,12 @@ private fun WelcomeScreen(
       Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(18.dp)) {
         WelcomeLogo()
         Text(
-          text = "OPENCLAW",
+          text = stringResource(R.string.openclaw_brand),
           style = ClawTheme.type.display.copy(fontSize = 34.sp, lineHeight = 38.sp, fontWeight = FontWeight.Black),
           color = ClawTheme.colors.text,
         )
         Text(
-          text = "Your personal AI assistant.\nExfoliate! Exfoliate!",
+          text = stringResource(R.string.welcome_subtitle),
           style = ClawTheme.type.section,
           color = ClawTheme.colors.text,
           textAlign = TextAlign.Center,
@@ -425,7 +426,7 @@ private fun WelcomeScreen(
       WelcomeHorizon()
       Spacer(modifier = Modifier.height(30.dp))
       Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(10.dp)) {
-        HeroPrimaryAction(title = "Connect Gateway", onClick = onConnect)
+        HeroPrimaryAction(title = stringResource(R.string.connect_gateway), onClick = onConnect)
       }
       Spacer(modifier = Modifier.height(104.dp))
     }
@@ -441,7 +442,7 @@ private fun WelcomeLogo() {
     contentColor = Color.Unspecified,
   ) {
     Box(modifier = Modifier.fillMaxSize().padding(12.dp), contentAlignment = Alignment.Center) {
-      Image(painter = painterResource(id = R.drawable.openclaw_logo), contentDescription = "OpenClaw logo", modifier = Modifier.fillMaxSize())
+      Image(painter = painterResource(id = R.drawable.openclaw_logo), contentDescription = stringResource(R.string.openclaw_logo), modifier = Modifier.fillMaxSize())
     }
   }
 }
@@ -535,20 +536,20 @@ private fun GatewaySetupScreen(
     Column(modifier = Modifier.fillMaxSize().imePadding(), verticalArrangement = Arrangement.SpaceBetween) {
       LazyColumn(verticalArrangement = Arrangement.spacedBy(9.dp)) {
         item {
-          OnboardingHeader(title = "Gateway Setup", subtitle = "Connect to your Gateway", onBack = onBack)
+          OnboardingHeader(title = stringResource(R.string.gateway_setup), subtitle = stringResource(R.string.connect_to_your_gateway), onBack = onBack)
         }
         item {
           GatewayOption(
             icon = Icons.Default.QrCode2,
-            title = "Scan setup code",
-            subtitle = "Use your Gateway QR or setup code",
+            title = stringResource(R.string.scan_setup_code),
+            subtitle = stringResource(R.string.use_qr_or_setup_code),
             onClick = onScan,
           )
         }
         item {
           GatewayOption(
             icon = Icons.Default.WifiTethering,
-            title = "Nearby gateway",
+            title = stringResource(R.string.nearby_gateway),
             subtitle = nearbyGateway.subtitle,
             status = nearbyGateway.status,
             onClick = onUseNearby.takeIf { nearbyGateway.canConnect },
@@ -557,15 +558,15 @@ private fun GatewaySetupScreen(
         item {
           GatewayOption(
             icon = Icons.Default.Link,
-            title = "Enter gateway URL",
-            subtitle = "Connect using a manual URL",
+            title = stringResource(R.string.enter_gateway_url),
+            subtitle = stringResource(R.string.connect_using_manual_url),
             onClick = { advancedOpen = true },
           )
         }
         error?.let { message ->
           item {
             ClawErrorState(
-              title = "Setup code issue",
+              title = stringResource(R.string.setup_code_issue),
               body = message,
             )
           }
@@ -582,7 +583,7 @@ private fun GatewaySetupScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
               ) {
-                Text(text = "Advanced", style = ClawTheme.type.section, color = ClawTheme.colors.text)
+                Text(text = stringResource(R.string.advanced), style = ClawTheme.type.section, color = ClawTheme.colors.text)
                 Icon(
                   imageVector = if (advancedOpen) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                   contentDescription = null,
@@ -591,22 +592,22 @@ private fun GatewaySetupScreen(
               }
             }
             if (advancedOpen) {
-              ClawTextField(value = setupCode, onValueChange = onSetupCodeChange, placeholder = "Setup code")
+              ClawTextField(value = setupCode, onValueChange = onSetupCodeChange, placeholder = stringResource(R.string.setup_code))
               Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                ClawTextField(value = manualHost, onValueChange = onManualHostChange, placeholder = "Host", modifier = Modifier.weight(1f))
-                ClawTextField(value = manualPort, onValueChange = onManualPortChange, placeholder = "Port", modifier = Modifier.width(104.dp))
+                ClawTextField(value = manualHost, onValueChange = onManualHostChange, placeholder = stringResource(R.string.host_label), modifier = Modifier.weight(1f))
+                ClawTextField(value = manualPort, onValueChange = onManualPortChange, placeholder = stringResource(R.string.port_label), modifier = Modifier.width(104.dp))
               }
               Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                TogglePill(text = if (manualTls) "TLS on" else "TLS off", selected = manualTls, onClick = { onManualTlsChange(!manualTls) })
-                TogglePill(text = "Local", selected = !manualTls, onClick = { onManualTlsChange(false) })
+                TogglePill(text = stringResource(if (manualTls) R.string.tls_on else R.string.tls_off), selected = manualTls, onClick = { onManualTlsChange(!manualTls) })
+                TogglePill(text = stringResource(R.string.local), selected = !manualTls, onClick = { onManualTlsChange(false) })
               }
-              ClawTextField(value = token, onValueChange = onTokenChange, placeholder = "Token optional")
-              ClawTextField(value = password, onValueChange = onPasswordChange, placeholder = "Password optional")
+              ClawTextField(value = token, onValueChange = onTokenChange, placeholder = stringResource(R.string.token_optional))
+              ClawTextField(value = password, onValueChange = onPasswordChange, placeholder = stringResource(R.string.password_optional))
             }
           }
         }
       }
-      ClawPrimaryButton(text = "Pair with Gateway", icon = Icons.Default.Security, onClick = onPair, modifier = Modifier.fillMaxWidth())
+      ClawPrimaryButton(text = stringResource(R.string.pair_with_gateway), icon = Icons.Default.Security, onClick = onPair, modifier = Modifier.fillMaxWidth())
     }
   }
 }
@@ -639,7 +640,7 @@ private fun GatewayRecoveryScreen(
 
   ClawScaffold(modifier = modifier, contentPadding = PaddingValues(horizontal = 18.dp, vertical = 16.dp)) {
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(18.dp)) {
-      OnboardingHeader(title = "Gateway Recovery", onBack = onBack)
+      OnboardingHeader(title = stringResource(R.string.gateway_recovery), onBack = onBack)
       Spacer(modifier = Modifier.height(12.dp))
       Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Icon(
@@ -664,9 +665,9 @@ private fun GatewayRecoveryScreen(
               GatewayRecoveryUiState.Failed -> ClawTheme.colors.warning
             },
         )
-        Text(text = recoveryState.title, style = ClawTheme.type.display, color = ClawTheme.colors.text)
+        Text(text = recoveryTitle(recoveryState), style = ClawTheme.type.display, color = ClawTheme.colors.text)
         Text(
-          text = recoveryState.message,
+          text = recoveryMessage(recoveryState, gatewayConnectionProblem),
           style = ClawTheme.type.body,
           color = ClawTheme.colors.textMuted,
           textAlign = TextAlign.Center,
@@ -675,7 +676,7 @@ private fun GatewayRecoveryScreen(
 
       ClawPanel {
         Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-          Text(text = "Last gateway", style = ClawTheme.type.caption, color = ClawTheme.colors.textMuted)
+          Text(text = stringResource(R.string.last_gateway), style = ClawTheme.type.caption, color = ClawTheme.colors.textMuted)
           Text(text = recoveryGatewayName(serverName = serverName, attemptedGatewayName = attemptedGatewayName), style = ClawTheme.type.section, color = ClawTheme.colors.text)
           Text(
             text =
@@ -695,12 +696,12 @@ private fun GatewayRecoveryScreen(
           ClawStatusPill(
             text =
               when (recoveryState) {
-                GatewayRecoveryUiState.Connected -> "Healthy"
-                GatewayRecoveryUiState.NodeCapabilityApprovalPending -> "Node approval"
-                GatewayRecoveryUiState.ApprovalRequired -> "Needs approval"
-                GatewayRecoveryUiState.Pairing -> "Pairing"
-                GatewayRecoveryUiState.Finishing -> "Connecting"
-                GatewayRecoveryUiState.Failed -> "Needs attention"
+                GatewayRecoveryUiState.Connected -> stringResource(R.string.status_healthy)
+                GatewayRecoveryUiState.NodeCapabilityApprovalPending -> stringResource(R.string.status_node_approval)
+                GatewayRecoveryUiState.ApprovalRequired -> stringResource(R.string.status_needs_approval)
+                GatewayRecoveryUiState.Pairing -> stringResource(R.string.status_pairing)
+                GatewayRecoveryUiState.Finishing -> stringResource(R.string.status_connecting)
+                GatewayRecoveryUiState.Failed -> stringResource(R.string.status_needs_attention)
               },
             status =
               when (recoveryState) {
@@ -717,13 +718,13 @@ private fun GatewayRecoveryScreen(
 
       Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
         ClawPrimaryButton(
-          text = if (ready) "Continue" else "Retry connection",
+          text = if (ready) stringResource(R.string.continue_label) else stringResource(R.string.retry_connection),
           icon = if (ready) Icons.Default.CheckCircle else Icons.Default.Refresh,
           onClick = if (ready) onContinue else onRetry,
           modifier = Modifier.fillMaxWidth(),
         )
-        OutlinedAction(title = "Edit connection", icon = Icons.Default.Edit, onClick = onEdit)
-        OutlinedAction(title = "Copy diagnostic", icon = Icons.Default.ContentCopy, onClick = { copyGatewayDiagnostic(context, statusText, serverName, remoteAddress, ready, gatewayConnectionProblem) })
+        OutlinedAction(title = stringResource(R.string.edit_connection), icon = Icons.Default.Edit, onClick = onEdit)
+        OutlinedAction(title = stringResource(R.string.copy_diagnostic), icon = Icons.Default.ContentCopy, onClick = { copyGatewayDiagnostic(context, statusText, serverName, remoteAddress, ready, gatewayConnectionProblem) })
       }
     }
   }
@@ -757,7 +758,7 @@ private fun ApprovalCommandBlock(
         border = BorderStroke(1.dp, ClawTheme.colors.border),
       ) {
         Box(contentAlignment = Alignment.Center) {
-          Icon(imageVector = Icons.Default.ContentCopy, contentDescription = "Copy approval command", modifier = Modifier.size(18.dp))
+          Icon(imageVector = Icons.Default.ContentCopy, contentDescription = stringResource(R.string.copy_approval_command), modifier = Modifier.size(18.dp))
         }
       }
     }
@@ -784,12 +785,12 @@ private fun PermissionSetupScreen(
         item {
           Column(modifier = Modifier.padding(top = 10.dp, bottom = 18.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text(
-              text = "Allow permissions",
+              text = stringResource(R.string.allow_permissions),
               style = ClawTheme.type.title.copy(fontSize = 20.sp, lineHeight = 25.sp, fontWeight = FontWeight.Bold),
               color = ClawTheme.colors.text,
             )
             Text(
-              text = "These permissions keep OpenClaw secure\nand useful.",
+              text = stringResource(R.string.permissions_intro),
               style = ClawTheme.type.body,
               color = ClawTheme.colors.textMuted,
             )
@@ -839,7 +840,7 @@ private fun OnboardingHeader(
     onBack?.let {
       Surface(onClick = it, modifier = Modifier.size(34.dp), color = Color.Transparent, contentColor = ClawTheme.colors.text) {
         Box(contentAlignment = Alignment.Center) {
-          Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", modifier = Modifier.size(23.dp))
+          Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back), modifier = Modifier.size(23.dp))
         }
       }
     }
@@ -867,7 +868,7 @@ private fun GatewayOption(
       trailing =
         onClick?.let {
           {
-            Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = "Open $title", modifier = Modifier.size(20.dp), tint = ClawTheme.colors.text)
+            Icon(imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight, contentDescription = stringResource(R.string.open_x_cd, title), modifier = Modifier.size(20.dp), tint = ClawTheme.colors.text)
           }
         },
       onClick = onClick,
@@ -924,17 +925,17 @@ private fun PermissionTopBar(onBack: () -> Unit) {
     AlertDialog(
       onDismissRequest = { showHelp = false },
       containerColor = ClawTheme.colors.surfaceRaised,
-      title = { Text("Permissions", style = ClawTheme.type.section, color = ClawTheme.colors.text) },
+      title = { Text(stringResource(R.string.permissions_title), style = ClawTheme.type.section, color = ClawTheme.colors.text) },
       text = {
         Text(
-          "Choose what this phone can share with OpenClaw. You can change these later in Settings.",
+          stringResource(R.string.permissions_body),
           style = ClawTheme.type.body,
-          color = ClawTheme.colors.textMuted,
+          color = ClawTheme.colors.text,
         )
       },
       confirmButton = {
         TextButton(onClick = { showHelp = false }) {
-          Text("Done")
+          Text(stringResource(R.string.done))
         }
       },
     )
@@ -947,11 +948,11 @@ private fun PermissionTopBar(onBack: () -> Unit) {
       contentColor = ClawTheme.colors.text,
     ) {
       Box(contentAlignment = Alignment.Center) {
-        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", modifier = Modifier.size(22.dp))
+        Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.back), modifier = Modifier.size(22.dp))
       }
     }
     Text(
-      text = "Permission Setup",
+      text = stringResource(R.string.permission_setup),
       style = ClawTheme.type.title.copy(fontSize = 15.2.sp, lineHeight = 19.sp),
       color = ClawTheme.colors.text,
       maxLines = 1,
@@ -1006,7 +1007,7 @@ private fun PermissionRow(row: PermissionRowModel) {
         )
       }
       Text(
-        text = if (row.granted) "Granted" else "Not granted",
+        text = if (row.granted) stringResource(R.string.granted) else stringResource(R.string.not_granted),
         style = ClawTheme.type.body,
         color = if (row.granted) ClawTheme.colors.success else ClawTheme.colors.textMuted,
         maxLines = 1,
@@ -1031,7 +1032,7 @@ private fun PermissionContinueButton(onClick: () -> Unit) {
     contentColor = ClawTheme.colors.primaryText,
   ) {
     Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-      Text(text = "Continue", style = ClawTheme.type.title.copy(fontSize = 18.sp, lineHeight = 23.sp), color = ClawTheme.colors.primaryText)
+      Text(text = stringResource(R.string.continue_), style = ClawTheme.type.title.copy(fontSize = 18.sp, lineHeight = 23.sp), color = ClawTheme.colors.primaryText)
       Icon(
         imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
         contentDescription = null,
@@ -1042,35 +1043,36 @@ private fun PermissionContinueButton(onClick: () -> Unit) {
   }
 }
 
-internal enum class GatewayRecoveryUiState(
-  val title: String,
-  val message: String,
-) {
-  Connected(
-    title = "Connected",
-    message = "Your Gateway is ready.",
-  ),
-  ApprovalRequired(
-    title = "Pairing Gateway",
-    message = "Approve this phone on the gateway.\nThen retry the connection.",
-  ),
-  NodeCapabilityApprovalPending(
-    title = "Node Approval Pending",
-    message = "Gateway pairing worked.\nApprove this phone's node capabilities from an operator UI.",
-  ),
-  Pairing(
-    title = "Pairing Gateway",
-    message = "Approval is in progress.\nOpenClaw will reconnect automatically.",
-  ),
-  Finishing(
-    title = "Connecting Gateway",
-    message = "OpenClaw is checking gateway and node access.",
-  ),
-  Failed(
-    title = "Connection issue",
-    message = "We could not reach your Gateway.\nLet's fix this.",
-  ),
+internal enum class GatewayRecoveryUiState {
+  Connected,
+  ApprovalRequired,
+  NodeCapabilityApprovalPending,
+  Pairing,
+  Finishing,
+  Failed,
 }
+
+@Composable
+private fun recoveryTitle(state: GatewayRecoveryUiState): String =
+  when (state) {
+    GatewayRecoveryUiState.Connected -> stringResource(R.string.connected)
+    GatewayRecoveryUiState.ApprovalRequired -> stringResource(R.string.pairing_gateway)
+    GatewayRecoveryUiState.NodeCapabilityApprovalPending -> stringResource(R.string.node_approval_pending)
+    GatewayRecoveryUiState.Pairing -> stringResource(R.string.pairing_gateway)
+    GatewayRecoveryUiState.Finishing -> stringResource(R.string.connecting_gateway)
+    GatewayRecoveryUiState.Failed -> stringResource(R.string.connection_issue)
+  }
+
+@Composable
+private fun recoveryMessage(state: GatewayRecoveryUiState, gatewayConnectionProblem: GatewayConnectionProblem?): String =
+  when (state) {
+    GatewayRecoveryUiState.Connected -> stringResource(R.string.gateway_ready)
+    GatewayRecoveryUiState.ApprovalRequired -> stringResource(R.string.approve_then_retry)
+    GatewayRecoveryUiState.NodeCapabilityApprovalPending -> stringResource(R.string.approve_node_capabilities)
+    GatewayRecoveryUiState.Pairing -> gatewayPairingInstruction(gatewayConnectionProblem)
+    GatewayRecoveryUiState.Finishing -> stringResource(R.string.checking_gateway_node_access)
+    GatewayRecoveryUiState.Failed -> stringResource(R.string.could_not_reach_gateway)
+  }
 
 internal data class NearbyGatewayUiState(
   val subtitle: String,
@@ -1136,8 +1138,9 @@ internal fun gatewayRecoveryUiState(
 
 /** Detects gateway-approved states where the Android node is still coming online. */
 internal fun gatewayStatusLooksLikePartialConnect(statusText: String): Boolean {
-  val lower = gatewayStatusForDisplay(statusText).lowercase()
-  return lower.contains("operator offline") || lower.contains("node offline")
+  val lower = statusText.lowercase()
+  return lower.contains("operator offline") || lower.contains("node offline") ||
+    lower.contains("操作员离线") || lower.contains("节点离线")
 }
 
 internal fun recoveryGatewayName(
@@ -1207,6 +1210,7 @@ private fun resolveGatewayConfig(
 }
 
 /** Selects the recovery detail line from endpoint metadata and transient gateway status. */
+@Composable
 private fun recoveryGatewayDetail(
   ready: Boolean,
   remoteAddress: String?,
@@ -1217,25 +1221,25 @@ private fun recoveryGatewayDetail(
   remoteAddress
     ?.takeIf { it.isNotBlank() }
     ?: if (ready) {
-      "Ready for chat and voice"
+      stringResource(R.string.ready_for_chat_and_voice)
     } else if (
       nodeCapabilityApprovalState == GatewayNodeApprovalState.PendingApproval ||
       nodeCapabilityApprovalState == GatewayNodeApprovalState.PendingReapproval ||
       nodeCapabilityApprovalState == GatewayNodeApprovalState.Unapproved
     ) {
-      "Gateway paired. Waiting for node capability approval."
+      stringResource(R.string.gateway_waiting_node_capability_approval)
     } else if (nodeCapabilityApprovalState == GatewayNodeApprovalState.Loading) {
-      "Gateway paired. Checking node capability approval."
+      stringResource(R.string.gateway_checking_node_capability_approval)
     } else if (gatewayConnectionProblem?.isPairingRequired == true && !gatewayConnectionProblem.canAutoRetry) {
       recoveryGatewayApprovalCommand(gatewayConnectionProblem)
-        ?.let { "Gateway approval is pending. Run this on the gateway host:" }
-        ?: "Gateway approval is pending. Run openclaw devices list on the gateway host, approve this phone, then retry."
-    } else if (statusText.contains("operator offline", ignoreCase = true)) {
-      "Gateway paired. Waiting for operator access."
+        ?.let { stringResource(R.string.gateway_approval_pending_run_this) }
+        ?: stringResource(R.string.gateway_approval_pending_command)
+    } else if (statusText.contains("operator offline", ignoreCase = true) || statusText.contains("操作员离线", ignoreCase = true)) {
+      stringResource(R.string.gateway_waiting_operator_access)
     } else if (gatewayStatusLooksLikePairing(statusText)) {
-      "Gateway approval is in progress. OpenClaw will retry automatically."
+      stringResource(R.string.gateway_approval_in_progress)
     } else {
-      "Gateway unreachable"
+      stringResource(R.string.gateway_unreachable)
     }
 
 private fun recoveryGatewayApprovalCommand(gatewayConnectionProblem: GatewayConnectionProblem?): String? {
@@ -1253,8 +1257,8 @@ private fun copyApprovalCommand(
   command: String,
 ) {
   val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-  clipboard.setPrimaryClip(ClipData.newPlainText("OpenClaw pairing approval command", command))
-  Toast.makeText(context, "Approval command copied", Toast.LENGTH_SHORT).show()
+  clipboard.setPrimaryClip(ClipData.newPlainText(context.getString(R.string.openclaw_brand) + " pairing approval command", command))
+  Toast.makeText(context, context.getString(R.string.approval_command_copied), Toast.LENGTH_SHORT).show()
 }
 
 /** Copies the onboarding recovery snapshot for support without including credentials. */
@@ -1269,18 +1273,18 @@ private fun copyGatewayDiagnostic(
   val approvalCommand = recoveryGatewayApprovalCommand(gatewayConnectionProblem)
   val diagnostic =
     listOfNotNull(
-      "OpenClaw Android gateway diagnostic",
-      "Status: $statusText",
-      gatewayConnectionProblem?.message?.let { "Gateway problem: $it" },
-      gatewayConnectionProblem?.requestId?.let { "Pairing request: $it" },
-      approvalCommand?.let { "Approval command: $it" },
-      "Gateway: ${serverName?.takeIf { it.isNotBlank() } ?: "Home Gateway"}",
-      "Address: ${remoteAddress?.takeIf { it.isNotBlank() } ?: "Not available"}",
-      "Ready: ${if (ready) "yes" else "no"}",
+      context.getString(R.string.android_gateway_diagnostic),
+      context.getString(R.string.status_label, statusText),
+      gatewayConnectionProblem?.message?.let { context.getString(R.string.gateway_problem_label, it) },
+      gatewayConnectionProblem?.requestId?.let { context.getString(R.string.pairing_request_label, it) },
+      approvalCommand?.let { context.getString(R.string.approval_command_label, it) },
+      context.getString(R.string.gateway_label, serverName?.takeIf { it.isNotBlank() } ?: context.getString(R.string.home_gateway)),
+      context.getString(R.string.address_label, remoteAddress?.takeIf { it.isNotBlank() } ?: context.getString(R.string.not_available)),
+      context.getString(R.string.ready_label, if (ready) context.getString(R.string.yes) else context.getString(R.string.no)),
     ).joinToString("\n")
   val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-  clipboard.setPrimaryClip(ClipData.newPlainText("OpenClaw gateway diagnostic", diagnostic))
-  Toast.makeText(context, "Diagnostic copied", Toast.LENGTH_SHORT).show()
+  clipboard.setPrimaryClip(ClipData.newPlainText(context.getString(R.string.openclaw_brand) + " gateway diagnostic", diagnostic))
+  Toast.makeText(context, context.getString(R.string.diagnostic_copied), Toast.LENGTH_SHORT).show()
 }
 
 /** One permission row plus launcher callback for onboarding's final setup step. */
@@ -1398,50 +1402,50 @@ private fun rememberPermissionState(
 
   val rows =
     listOfNotNull(
-      PermissionRowModel("Voice", "Record and transcribe audio", Icons.Default.Mic, microphoneGranted) {
+      PermissionRowModel(stringResource(R.string.voice), stringResource(R.string.perm_voice_desc), Icons.Default.Mic, microphoneGranted) {
         request(Manifest.permission.RECORD_AUDIO)
       },
-      PermissionRowModel("Camera", "Capture photos and video", Icons.Default.CameraAlt, cameraGranted) {
+      PermissionRowModel(stringResource(R.string.perm_camera), stringResource(R.string.perm_camera_desc), Icons.Default.CameraAlt, cameraGranted) {
         request(Manifest.permission.CAMERA)
       },
-      PermissionRowModel("Location", "Use location when needed", Icons.Default.LocationOn, locationGranted) {
+      PermissionRowModel(stringResource(R.string.perm_location), stringResource(R.string.perm_location_desc), Icons.Default.LocationOn, locationGranted) {
         request(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
       },
       if (photosAvailable) {
-        PermissionRowModel("Photos", "Attach photos and media", Icons.Default.Image, photosGranted) {
+        PermissionRowModel(stringResource(R.string.perm_photos), stringResource(R.string.perm_photos_desc), Icons.Default.Image, photosGranted) {
           request(photosPermission)
         }
       } else {
         null
       },
-      PermissionRowModel("Contacts", "Read contacts securely", Icons.Default.Person, contactsGranted) {
+      PermissionRowModel(stringResource(R.string.perm_contacts), stringResource(R.string.perm_contacts_desc), Icons.Default.Person, contactsGranted) {
         request(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS)
       },
-      PermissionRowModel("Calendar", "Read events and schedules", Icons.Default.CalendarMonth, calendarGranted) {
+      PermissionRowModel(stringResource(R.string.perm_calendar), stringResource(R.string.perm_calendar_desc), Icons.Default.CalendarMonth, calendarGranted) {
         request(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR)
       },
-      PermissionRowModel("Notifications", "Send important alerts", Icons.Default.Notifications, notificationsGranted) {
+      PermissionRowModel(stringResource(R.string.perm_notifications), stringResource(R.string.perm_notifications_desc), Icons.Default.Notifications, notificationsGranted) {
         if (Build.VERSION.SDK_INT >= 33) request(Manifest.permission.POST_NOTIFICATIONS)
       },
-      PermissionRowModel("Notification listener", "Forward selected app alerts", Icons.Default.Sensors, notificationListenerGranted) {
+      PermissionRowModel(stringResource(R.string.perm_notification_listener), stringResource(R.string.perm_notification_listener_desc), Icons.Default.Sensors, notificationListenerGranted) {
         context.startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
       },
       if (motionAvailable) {
-        PermissionRowModel("Motion", "Read activity and step context", Icons.Default.Sensors, motionGranted) {
+        PermissionRowModel(stringResource(R.string.perm_motion), stringResource(R.string.perm_motion_desc), Icons.Default.Sensors, motionGranted) {
           request(Manifest.permission.ACTIVITY_RECOGNITION)
         }
       } else {
         null
       },
       if (smsAvailable) {
-        PermissionRowModel("SMS", "Send and read messages when approved", Icons.Default.Notifications, smsGranted) {
+        PermissionRowModel(stringResource(R.string.perm_sms), stringResource(R.string.perm_sms_desc), Icons.Default.Notifications, smsGranted) {
           request(Manifest.permission.SEND_SMS, Manifest.permission.READ_SMS)
         }
       } else {
         null
       },
       if (callLogAvailable) {
-        PermissionRowModel("Call Log", "Read recent call context", Icons.Default.Person, callLogGranted) {
+        PermissionRowModel(stringResource(R.string.perm_call_log), stringResource(R.string.perm_call_log_desc), Icons.Default.Person, callLogGranted) {
           request(Manifest.permission.READ_CALL_LOG)
         }
       } else {
