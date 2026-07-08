@@ -8,6 +8,7 @@ import ai.openclaw.app.NotificationPackageFilterMode
 import ai.openclaw.app.SensitiveFeatureConfig
 import ai.openclaw.app.node.DeviceNotificationListenerService
 import ai.openclaw.app.normalizeLocalHourMinute
+import ai.openclaw.app.update.AppUpdateManager
 import android.Manifest
 import android.app.role.RoleManager
 import android.content.Context
@@ -38,6 +39,7 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -45,15 +47,22 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.RadioButton
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.ui.res.stringResource
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
@@ -65,6 +74,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -94,6 +104,10 @@ fun SettingsSheet(viewModel: MainViewModel) {
   val notificationForwardingQuietEnd by viewModel.notificationForwardingQuietEnd.collectAsState()
   val notificationForwardingMaxEventsPerMinute by viewModel.notificationForwardingMaxEventsPerMinute.collectAsState()
   val notificationForwardingSessionKey by viewModel.notificationForwardingSessionKey.collectAsState()
+  val appearanceThemeMode by viewModel.appearanceThemeMode.collectAsState()
+  val voiceCaptureMode by viewModel.voiceCaptureMode.collectAsState()
+  val appUpdateState by viewModel.appUpdateState.collectAsState()
+  val appUpdateCheckResult by viewModel.appUpdateCheckResult.collectAsState()
 
   var notificationQuietStartDraft by remember(notificationForwardingQuietStart) {
     mutableStateOf(notificationForwardingQuietStart)
@@ -1219,9 +1233,248 @@ fun SettingsSheet(viewModel: MainViewModel) {
         }
       }
 
+      // ── Version and update ──
+      item {
+        Text(
+          stringResource(R.string.version_and_update),
+          style = mobileCaption1.copy(fontWeight = FontWeight.Bold, letterSpacing = 1.sp),
+          color = mobileAccent,
+        )
+      }
+      item {
+        AppUpdateRow(
+          appVersion = appVersion,
+          updateState = appUpdateState,
+          checkResult = appUpdateCheckResult,
+          onCheck = { viewModel.checkForAppUpdate() },
+          onDownload = { viewModel.downloadAppUpdate(context) },
+          onInstall = { viewModel.installAppUpdate(context) },
+          onOpenRelease = { viewModel.openAppUpdateReleasePage(context) },
+          onDismiss = { viewModel.clearAppUpdateState() },
+        )
+      }
+
       item { Spacer(modifier = Modifier.height(24.dp)) }
     }
   }
+}
+
+/** Settings row that shows current version and handles in-app update flow. */
+@Composable
+private fun AppUpdateRow(
+  appVersion: String,
+  updateState: AppUpdateManager.UpdateState,
+  checkResult: AppUpdateManager.CheckResult?,
+  onCheck: () -> Unit,
+  onDownload: () -> Unit,
+  onInstall: () -> Unit,
+  onOpenRelease: () -> Unit,
+  onDismiss: () -> Unit,
+) {
+  val context = LocalContext.current
+  var showDialog by remember { mutableStateOf(false) }
+  val listItemColors =
+    ListItemDefaults.colors(
+      containerColor = Color.Transparent,
+      headlineColor = mobileText,
+      supportingColor = mobileTextSecondary,
+      trailingIconColor = mobileTextSecondary,
+      leadingIconColor = mobileTextSecondary,
+    )
+
+  if (showDialog) {
+    AppUpdateDialog(
+      updateState = updateState,
+      checkResult = checkResult,
+      onDownload = onDownload,
+      onInstall = onInstall,
+      onOpenRelease = onOpenRelease,
+      onDismiss = {
+        showDialog = false
+        onDismiss()
+      },
+    )
+  }
+
+  val updateStatusLabel =
+    remember(updateState, checkResult) {
+      when (updateState) {
+        is AppUpdateManager.UpdateState.Checking -> context.getString(R.string.app_update_checking)
+        is AppUpdateManager.UpdateState.Downloading -> context.getString(R.string.app_update_downloading)
+        is AppUpdateManager.UpdateState.ReadyToInstall -> context.getString(R.string.app_update_ready_to_install)
+        is AppUpdateManager.UpdateState.Error -> context.getString(R.string.app_update_error)
+        is AppUpdateManager.UpdateState.Idle ->
+          when (checkResult) {
+            is AppUpdateManager.CheckResult.UpToDate -> context.getString(R.string.app_update_up_to_date)
+            is AppUpdateManager.CheckResult.UpdateAvailable ->
+              context.getString(R.string.app_update_available_version, checkResult.version)
+            is AppUpdateManager.CheckResult.Error -> context.getString(R.string.app_update_check_failed)
+            null -> context.getString(R.string.app_update_tap_to_check)
+          }
+      }
+    }
+
+  val isBusy =
+    updateState is AppUpdateManager.UpdateState.Checking ||
+      updateState is AppUpdateManager.UpdateState.Downloading
+
+  Column(modifier = Modifier.settingsRowModifier()) {
+    ListItem(
+      modifier = Modifier.fillMaxWidth(),
+      colors = listItemColors,
+      headlineContent = { Text(stringResource(R.string.app_update_current_version), style = mobileHeadline) },
+      supportingContent = { Text(updateStatusLabel, style = mobileCallout) },
+      trailingContent = {
+        if (isBusy) {
+          CircularProgressIndicator(
+            modifier = Modifier.size(24.dp),
+            color = mobileAccent,
+            strokeWidth = 2.dp,
+          )
+        } else {
+          Button(
+            onClick = {
+              if (checkResult is AppUpdateManager.CheckResult.UpdateAvailable ||
+                checkResult is AppUpdateManager.CheckResult.Error
+              ) {
+                showDialog = true
+              } else {
+                onCheck()
+                showDialog = true
+              }
+            },
+            colors = settingsPrimaryButtonColors(),
+            shape = RoundedCornerShape(14.dp),
+          ) {
+            Text(
+              when (checkResult) {
+                is AppUpdateManager.CheckResult.UpdateAvailable -> context.getString(R.string.app_update_action)
+                is AppUpdateManager.CheckResult.Error -> context.getString(R.string.app_update_retry)
+                else -> context.getString(R.string.app_update_check)
+              },
+              style = mobileCallout.copy(fontWeight = FontWeight.Bold),
+            )
+          }
+        }
+      },
+    )
+    if (checkResult is AppUpdateManager.CheckResult.UpdateAvailable) {
+      HorizontalDivider(color = mobileBorder)
+      Column(
+        modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+      ) {
+        Text(
+          context.getString(R.string.app_update_latest_version, checkResult.version),
+          style = mobileCallout,
+          color = mobileTextSecondary,
+        )
+        Text(
+          appVersion,
+          style = mobileCaption1.copy(fontFamily = FontFamily.Monospace),
+          color = mobileTextTertiary,
+        )
+      }
+    }
+  }
+}
+
+/** Dialog that guides the user through download/install/update actions. */
+@Composable
+private fun AppUpdateDialog(
+  updateState: AppUpdateManager.UpdateState,
+  checkResult: AppUpdateManager.CheckResult?,
+  onDownload: () -> Unit,
+  onInstall: () -> Unit,
+  onOpenRelease: () -> Unit,
+  onDismiss: () -> Unit,
+) {
+  val context = LocalContext.current
+  androidx.compose.material3.AlertDialog(
+    onDismissRequest = onDismiss,
+    containerColor = mobileCardSurface,
+    title = {
+      Text(
+        when (checkResult) {
+          is AppUpdateManager.CheckResult.UpdateAvailable ->
+            context.getString(R.string.app_update_available_title, checkResult.version)
+          is AppUpdateManager.CheckResult.Error -> context.getString(R.string.app_update_check_failed_title)
+          else -> context.getString(R.string.app_update_no_update_title)
+        },
+        style = mobileHeadline,
+        color = mobileText,
+      )
+    },
+    text = {
+      Text(
+        when (updateState) {
+          is AppUpdateManager.UpdateState.Downloading ->
+            context.getString(R.string.app_update_downloading_message)
+          is AppUpdateManager.UpdateState.ReadyToInstall ->
+            context.getString(R.string.app_update_ready_to_install_message)
+          is AppUpdateManager.UpdateState.Error ->
+            updateState.reason
+          else ->
+            when (checkResult) {
+              is AppUpdateManager.CheckResult.UpdateAvailable ->
+                context.getString(R.string.app_update_available_message, checkResult.version)
+              is AppUpdateManager.CheckResult.Error ->
+                checkResult.reason
+              else -> context.getString(R.string.app_update_up_to_date_message)
+            }
+        },
+        style = mobileCallout,
+        color = mobileText,
+      )
+    },
+    confirmButton = {
+      when (updateState) {
+        is AppUpdateManager.UpdateState.ReadyToInstall ->
+          Button(
+            onClick = { onInstall(); onDismiss() },
+            colors = settingsPrimaryButtonColors(),
+            shape = RoundedCornerShape(14.dp),
+          ) {
+            Text(context.getString(R.string.app_update_install), style = mobileCallout.copy(fontWeight = FontWeight.Bold))
+          }
+        is AppUpdateManager.UpdateState.Downloading ->
+          Button(
+            onClick = {},
+            enabled = false,
+            colors = settingsPrimaryButtonColors(),
+            shape = RoundedCornerShape(14.dp),
+          ) {
+            Text(context.getString(R.string.app_update_downloading), style = mobileCallout.copy(fontWeight = FontWeight.Bold))
+          }
+        else ->
+          if (checkResult is AppUpdateManager.CheckResult.UpdateAvailable) {
+            Button(
+              onClick = onDownload,
+              colors = settingsPrimaryButtonColors(),
+              shape = RoundedCornerShape(14.dp),
+            ) {
+              Text(context.getString(R.string.app_update_download), style = mobileCallout.copy(fontWeight = FontWeight.Bold))
+            }
+          } else {
+            Button(
+              onClick = onDismiss,
+              colors = settingsPrimaryButtonColors(),
+              shape = RoundedCornerShape(14.dp),
+            ) {
+              Text(context.getString(R.string.ok), style = mobileCallout.copy(fontWeight = FontWeight.Bold))
+            }
+          }
+      }
+    },
+    dismissButton = {
+      TextButton(
+        onClick = onDismiss,
+        colors = ButtonDefaults.textButtonColors(contentColor = mobileTextSecondary),
+      ) {
+        Text(context.getString(R.string.cancel))
+      }
+    },
+  )
 }
 
 /** Shared Material text-field colors for the legacy mobile settings sheet. */

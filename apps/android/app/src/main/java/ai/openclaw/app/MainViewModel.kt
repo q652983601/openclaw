@@ -12,6 +12,7 @@ import ai.openclaw.app.gateway.GatewayUpdateAvailableSummary
 import ai.openclaw.app.node.CameraCaptureManager
 import ai.openclaw.app.node.CanvasController
 import ai.openclaw.app.node.SmsManager
+import ai.openclaw.app.update.AppUpdateManager
 import ai.openclaw.app.voice.VoiceConversationEntry
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
@@ -195,6 +196,12 @@ class MainViewModel(
   val talkModeStatusText: StateFlow<String> = runtimeState(initial = appContext.getString(R.string.talk_mode_off)) { it.talkModeStatusText }
   val talkModeConversation: StateFlow<List<VoiceConversationEntry>> =
     runtimeState(initial = emptyList()) { it.talkModeConversation }
+
+  private val _appUpdateState = MutableStateFlow<AppUpdateManager.UpdateState>(AppUpdateManager.UpdateState.Idle)
+  val appUpdateState: StateFlow<AppUpdateManager.UpdateState> = _appUpdateState
+
+  private val _appUpdateCheckResult = MutableStateFlow<AppUpdateManager.CheckResult?>(null)
+  val appUpdateCheckResult: StateFlow<AppUpdateManager.CheckResult?> = _appUpdateCheckResult
 
   val chatSessionKey: StateFlow<String> = runtimeState(initial = "main") { it.chatSessionKey }
   val chatSessionId: StateFlow<String?> = runtimeState(initial = null) { it.chatSessionId }
@@ -608,4 +615,49 @@ class MainViewModel(
       thinking = thinking,
       attachments = attachments,
     )
+
+  /** Checks GitHub for a newer APK release. */
+  fun checkForAppUpdate() {
+    if (_appUpdateState.value != AppUpdateManager.UpdateState.Idle) return
+    _appUpdateState.value = AppUpdateManager.UpdateState.Checking
+    _appUpdateCheckResult.value = null
+    viewModelScope.launch(Dispatchers.IO) {
+      val result = AppUpdateManager.checkForUpdate()
+      _appUpdateCheckResult.value = result
+      _appUpdateState.value = AppUpdateManager.UpdateState.Idle
+    }
+  }
+
+  /** Downloads the selected release asset and emits install/error states. */
+  fun downloadAppUpdate(context: android.content.Context) {
+    val result = _appUpdateCheckResult.value as? AppUpdateManager.CheckResult.UpdateAvailable ?: return
+    _appUpdateState.value = AppUpdateManager.UpdateState.Downloading(progress = null)
+    viewModelScope.launch(Dispatchers.IO) {
+      runCatching {
+        AppUpdateManager.downloadUpdate(context, result.asset) { state ->
+          _appUpdateState.value = state
+        }
+      }.onFailure { throwable ->
+        _appUpdateState.value = AppUpdateManager.UpdateState.Error(throwable.message ?: "Download failed")
+      }
+    }
+  }
+
+  /** Launches the Android package installer for a downloaded update. */
+  fun installAppUpdate(context: android.content.Context) {
+    val state = _appUpdateState.value as? AppUpdateManager.UpdateState.ReadyToInstall ?: return
+    AppUpdateManager.installUpdate(context, state.file)
+  }
+
+  /** Opens the release page in a browser as a fallback. */
+  fun openAppUpdateReleasePage(context: android.content.Context) {
+    val result = _appUpdateCheckResult.value as? AppUpdateManager.CheckResult.UpdateAvailable ?: return
+    AppUpdateManager.openReleasePage(context, result.htmlUrl)
+  }
+
+  /** Resets the app-update flow so the user can retry. */
+  fun clearAppUpdateState() {
+    _appUpdateState.value = AppUpdateManager.UpdateState.Idle
+    _appUpdateCheckResult.value = null
+  }
 }

@@ -1096,4 +1096,27 @@ and configured models.</string>
     <string name="cron_attention">Needs attention</string>
     <string name="cron_waiting_format">%1$d waiting</string>
     <string name="cron_off">Off</string>
+    <string name="app_update_current_version">Current version</string>
+    <string name="app_update_action">Update</string>
+    <string name="app_update_check">Check</string>
+    <string name="app_update_retry">Retry</string>
+    <string name="app_update_download">Download</string>
+    <string name="app_update_install">Install</string>
+    <string name="app_update_tap_to_check">Tap to check for updates</string>
+    <string name="app_update_checking">Checking for updates…</string>
+    <string name="app_update_downloading">Downloading…</string>
+    <string name="app_update_ready_to_install">Ready to install</string>
+    <string name="app_update_error">Update failed</string>
+    <string name="app_update_up_to_date">Up to date</string>
+    <string name="app_update_available_version">New version %1$s available</string>
+    <string name="app_update_check_failed">Update check failed</string>
+    <string name="app_update_latest_version">Latest version: %1$s</string>
+    <string name="app_update_available_title">Update to %1$s</string>
+    <string name="app_update_check_failed_title">Update check failed</string>
+    <string name="app_update_no_update_title">No update available</string>
+    <string name="app_update_downloading_message">The update is downloading. You will be prompted to install when it finishes.</string>
+    <string name="app_update_ready_to_install_message">The update has been downloaded. Install it now to use the new version.</string>
+    <string name="app_update_unknown_error">Something went wrong while updating.</string>
+    <string name="app_update_available_message">A new version (%1$s) is available. Download and install it now?</string>
+    <string name="app_update_up_to_date_message">You are running the latest version.</string>
 </resources>
